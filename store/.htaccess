@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^products$ products.php [L]
+RewriteRule ^orders$ orders.php [L]
+RewriteRule ^customers$ customers.php [L]

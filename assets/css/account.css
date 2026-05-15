@@ -1,0 +1,217 @@
+/* =========================
+   CUSTOMER ACCOUNT PAGE
+========================= */
+
+body {
+    margin: 0;
+    padding: 0;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(134, 196, 111, 0.16), transparent 18%),
+        radial-gradient(circle at 92% 16%, rgba(18, 88, 39, 0.10), transparent 16%),
+        #fbfcf8;
+    color: #1f2a1f;
+}
+
+.account-container {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    min-height: 58vh;
+    padding: 56px 20px;
+    position: relative;
+}
+
+.account-container::before,
+.account-container::after {
+    color: rgba(18, 88, 39, 0.12);
+    content: "\f06c";
+    font-family: "Font Awesome 6 Free";
+    font-size: 86px;
+    font-weight: 900;
+    position: absolute;
+    z-index: 0;
+}
+
+.account-container::before {
+    bottom: 26px;
+    left: 8%;
+    transform: rotate(24deg);
+}
+
+.account-container::after {
+    right: 9%;
+    top: 34px;
+    transform: rotate(-18deg);
+}
+
+.account-card {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e1e8dc;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(24, 45, 30, 0.12);
+    box-sizing: border-box;
+    max-width: 520px;
+    padding: 40px 44px;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+}
+
+.account-card-header {
+    margin-bottom: 26px;
+    text-align: center;
+}
+
+.account-card h2 {
+    align-items: center;
+    color: #103f20;
+    display: flex;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 38px;
+    gap: 8px;
+    justify-content: center;
+    line-height: 1.05;
+    margin: 0 0 10px;
+}
+
+.account-card h2 i {
+    color: #86c46f;
+    font-size: 22px;
+}
+
+.account-card-header p {
+    color: #66736a;
+    margin: 0;
+}
+
+.account-message {
+    background: #fff5f2;
+    border: 1px solid #f4c6b8;
+    border-radius: 8px;
+    color: #a63b1d;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+}
+
+.account-form {
+    display: grid;
+    gap: 18px;
+}
+
+.account-form label {
+    color: #125827;
+    display: grid;
+    font-size: 13px;
+    font-weight: 900;
+    gap: 8px;
+}
+
+.account-input {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #dbe6d8;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    min-height: 54px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-input:focus-within {
+    border-color: #125827;
+    box-shadow: 0 0 0 3px rgba(18, 88, 39, 0.10);
+}
+
+.account-input i {
+    align-items: center;
+    background: #eaf4e5;
+    border-radius: 6px;
+    color: #125827;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    justify-self: center;
+    width: 30px;
+}
+
+.account-form input {
+    background: transparent;
+    border: none;
+    box-sizing: border-box;
+    color: #1f2a1f;
+    font-size: 15px;
+    height: 100%;
+    outline: none;
+    padding: 0 14px 0 4px;
+    width: 100%;
+}
+
+.account-form input::placeholder {
+    color: #9aa59a;
+}
+
+.account-form button {
+    background: #125827;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 14px 28px rgba(18, 88, 39, 0.22);
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 900;
+    min-height: 54px;
+    transition: background 0.2s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.account-form button:hover {
+    background: #0d461f;
+    transform: translateY(-1px);
+}
+
+.account-footer {
+    color: #4f584d;
+    font-size: 14px;
+    margin-top: 24px;
+    text-align: center;
+}
+
+.account-footer a {
+    align-items: center;
+    color: #125827;
+    display: inline-flex;
+    font-weight: 900;
+    gap: 6px;
+    margin-left: 6px;
+    text-decoration: none;
+}
+
+.account-footer a::after {
+    content: "\f061";
+    font-family: "Font Awesome 6 Free";
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.account-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+    .account-card {
+        padding: 30px 22px;
+    }
+
+    .account-card h2 {
+        font-size: 31px;
+    }
+
+    .account-container::before,
+    .account-container::after {
+        display: none;
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "store_name": "J&J's Kitchenette",
+    "store_email": "jjkitchenette@gmail.com",
+    "store_phone": "+63 976 174 3393",
+    "store_area": "Tangub City, Misamis Occidental",
+    "currency": "PHP",
+    "delivery_fee": "0",
+    "pickup_enabled": "1",
+    "delivery_enabled": "1",
+    "low_stock_alert": "10",
+    "order_note": "Thank you for ordering from J&J Kitchenette."
+}

@@ -1,0 +1,25 @@
+# Local environment
+.env
+*.local
+db.php
+
+# Dependency/cache folders
+vendor/
+node_modules/
+
+# Runtime uploads and generated files
+uploads/*
+!uploads/.gitkeep
+store/uploads/*
+!store/uploads/.gitkeep
+
+# Local database/config exports
+*.sql
+*.sqlite
+*.db
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

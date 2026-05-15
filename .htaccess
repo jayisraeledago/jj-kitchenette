@@ -1,0 +1,24 @@
+RewriteEngine On
+RewriteBase /jj_kitchenette/
+
+# Keep the home page as /jj_kitchenette/.
+RewriteCond %{REQUEST_METHOD} GET
+RewriteCond %{THE_REQUEST} \s/+jj_kitchenette/index(?:\.php)?[?\s]
+RewriteRule ^index(?:\.php)?$ /jj_kitchenette/ [R=301,L]
+
+# Keep account.php accessible because /account is an existing folder.
+RewriteRule ^account\.php$ - [L]
+RewriteRule ^account/?$ account.php [L,QSA]
+
+# Redirect typed/clicked GET URLs like /menu.php to /menu.
+# POST requests are not redirected so form submissions keep working.
+RewriteCond %{REQUEST_METHOD} GET
+RewriteCond %{THE_REQUEST} \s/+jj_kitchenette/([^\s?]+)\.php[?\s]
+RewriteRule ^(.+)\.php$ %1 [R=301,L,NE]
+
+RewriteRule ^product/([a-zA-Z0-9-]+)$ product.php?handle=$1 [L,QSA]
+
+# Serve /menu from menu.php, /account/profile from account/profile.php, etc.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L,QSA]
