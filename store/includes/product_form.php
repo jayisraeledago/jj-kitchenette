@@ -87,7 +87,6 @@
         </div>
 
         <div class="variant-header" style="visibility: hidden;">
-            <span>Image</span>
             <span>Option</span>
             <span>SKU</span>
             <span>Price</span>

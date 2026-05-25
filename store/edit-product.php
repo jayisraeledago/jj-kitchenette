@@ -44,26 +44,6 @@ function createHandle($title)
     return trim($handle, '-');
 }
 
-function uploadVariantImage($file, $index)
-{
-    if (!isset($file['name'][$index]) || $file['error'][$index] !== 0) {
-        return null;
-    }
-
-    $uploadDir = "uploads/variants/";
-
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    $filename = time() . '_' . basename($file['name'][$index]);
-    $target = $uploadDir . $filename;
-
-    move_uploaded_file($file['tmp_name'][$index], $target);
-
-    return $filename;
-}
-
 function rejectInvalidProductNumber($values, $label, $integerOnly = false)
 {
     if (!is_array($values)) {
@@ -106,21 +86,6 @@ if (isset($_POST['delete'])) {
     }
 
     mysqli_query($conn, "DELETE FROM product_images WHERE product_id='$product_id'");
-
-    // =========================
-    // DELETE VARIANT IMAGES
-    // =========================
-    $variants = mysqli_query($conn, "
-        SELECT image FROM product_variants WHERE product_id='$product_id'
-    ");
-
-    while ($v = mysqli_fetch_assoc($variants)) {
-        $file = "uploads/variants/" . $v['image'];
-
-        if (!empty($v['image']) && file_exists($file)) {
-            unlink($file);
-        }
-    }
 
     // =========================
     // DELETE VARIANTS
@@ -383,7 +348,6 @@ if (isset($_POST['save'])) {
         saveOption($conn, $product_id, $option2_name, $option2);
         saveOption($conn, $product_id, $option3_name, $option3);
 
-        $existingImages = $_POST['existing_image'] ?? [];
         $total = count($prices);
 
         for ($i = 0; $i < $total; $i++) {
@@ -399,21 +363,15 @@ if (isset($_POST['save'])) {
             $stock = $stocks[$i] ?? 0;
             $sku = strtoupper(str_replace(' ', '', $skus[$i] ?? ''));
 
-            $imageName = uploadVariantImage($_FILES['variant_image'], $i);
-
-            if (!$imageName && isset($existingImages[$i])) {
-                $imageName = $existingImages[$i];
-            }
-
             if (empty($sku)) {
                 $sku = generateSkuFromTitle($title, $i + 1);
             }
 
             mysqli_query($conn, "
             INSERT INTO product_variants 
-            (product_id, option1_value, option2_value, option3_value, price, inventory, sku, image)
+            (product_id, option1_value, option2_value, option3_value, price, inventory, sku)
             VALUES 
-            ('$product_id', '$opt1', $opt2_sql, $opt3_sql, '$price', '$stock', '$sku', '$imageName')
+            ('$product_id', '$opt1', $opt2_sql, $opt3_sql, '$price', '$stock', '$sku')
         ");
         }
 
@@ -634,7 +592,6 @@ if (isset($_POST['save'])) {
                                 </div>
 
                                 <div class="variant-header" style="visibility: hidden;">
-                                    <span>Image</span>
                                     <span>Option</span>
                                     <span>SKU</span>
                                     <span>Price</span>
@@ -943,19 +900,9 @@ if (isset($_POST['save'])) {
                             html += `
                             <div class="variant-row">
 
-                                <div class="col image">
-                                    <label class="upload-box">
-                                        <span>+ Upload</span>
-                                        <input type="hidden" name="existing_image[]" value="">
-                                        <input type="file" name="variant_image[]" hidden>
-                                        <img class="preview-img" style="display:none;">
-                                    </label>
-                                </div>
-
                                 <div class="col option">${val1}</div>
 
                                 <input type="hidden" name="option1_value[]" value="${val1}">
-                                <input type="hidden" name="existing_image[]" value="">
 
                                 <div class="col">
                                     <input type="text" name="sku[]" placeholder="SKU">
@@ -984,20 +931,10 @@ if (isset($_POST['save'])) {
                                 html += `
                                 <div class="variant-row">
 
-                                    <div class="col image">
-                                        <label class="upload-box">
-                                            <span>+ Upload</span>
-                                            <input type="hidden" name="existing_image[]" value="">
-                                            <input type="file" name="variant_image[]" hidden>
-                                            <img class="preview-img" style="display:none;">
-                                        </label>
-                                    </div>
-
                                     <div class="col option">${combined}</div>
 
                                     <input type="hidden" name="option1_value[]" value="${val1}">
                                     <input type="hidden" name="option2_value[]" value="${val2}">
-                                    <input type="hidden" name="existing_image[]" value="">
 
                                     <div class="col">
                                         <input type="text" name="sku[]" placeholder="SKU">
@@ -1028,21 +965,11 @@ if (isset($_POST['save'])) {
                                     html += `
                                     <div class="variant-row">
 
-                                        <div class="col image">
-                                            <label class="upload-box">
-                                                <span>+ Upload</span>
-                                                <input type="hidden" name="existing_image[]" value="">
-                                                <input type="file" name="variant_image[]" hidden>
-                                                <img class="preview-img" style="display:none;">
-                                            </label>
-                                        </div>
-
                                         <div class="col option">${combined}</div>
 
                                         <input type="hidden" name="option1_value[]" value="${val1}">
                                         <input type="hidden" name="option2_value[]" value="${val2}">
                                         <input type="hidden" name="option3_value[]" value="${val3}">
-                                        <input type="hidden" name="existing_image[]" value="">
 
                                         <div class="col">
                                             <input type="text" name="sku[]" placeholder="SKU">
@@ -1209,27 +1136,6 @@ if (isset($_POST['save'])) {
                 }
             });
 
-            document.addEventListener('change', function (e) {
-                if (e.target.name === 'variant_image[]') {
-
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    const container = e.target.closest('.upload-box');
-                    const img = container.querySelector('.preview-img');
-                    const text = container.querySelector('span');
-
-                    reader.onload = function (event) {
-                        img.src = event.target.result;
-                        img.style.display = 'block';
-                        text.style.display = 'none';
-                    };
-
-                    reader.readAsDataURL(file);
-                }
-            });
-
         });
     </script>
 
@@ -1304,8 +1210,6 @@ if (isset($_POST['save'])) {
                         <input type="hidden" name="option1_value[]" value="<?= $v['option1_value'] ?>">
                         <input type="hidden" name="option2_value[]" value="<?= $v['option2_value'] ?>">
                         <input type="hidden" name="option3_value[]" value="<?= $v['option3_value'] ?>">
-                        <input type="hidden" name="existing_image[]" value="">
-
                         <div class="col">
                             <input type="text" name="sku[]" value="<?= $v['sku'] ?>">
                     </div>

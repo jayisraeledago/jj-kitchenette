@@ -13,26 +13,6 @@ function createHandle($title)
     return trim($handle, '-');
 }
 
-function uploadVariantImage($file, $index)
-{
-    if (!isset($file['name'][$index]) || $file['error'][$index] !== 0) {
-        return null;
-    }
-
-    $uploadDir = "uploads/variants/";
-
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    $filename = time() . '_' . basename($file['name'][$index]);
-    $target = $uploadDir . $filename;
-
-    move_uploaded_file($file['tmp_name'][$index], $target);
-
-    return $filename;
-}
-
 function rejectInvalidProductNumber($values, $label, $integerOnly = false)
 {
     if (!is_array($values)) {
@@ -191,17 +171,15 @@ if (isset($_POST['save'])) {
             $stock = $stocks[$i] ?? 0;
             $sku = strtoupper(str_replace(' ', '', $skus[$i] ?? ''));
 
-            $imageName = uploadVariantImage($_FILES['variant_image'], $i);
-
             if (empty($sku)) {
                 $sku = generateSkuFromTitle($title, $i + 1);
             }
 
             $result = mysqli_query($conn, "
                 INSERT INTO product_variants 
-                (product_id, option1_value, option2_value, option3_value, price, inventory, sku, image)
+                (product_id, option1_value, option2_value, option3_value, price, inventory, sku)
                 VALUES 
-                ('$product_id', '$opt1', $opt2_sql, $opt3_sql, '$price', '$stock', '$sku', '$imageName')
+                ('$product_id', '$opt1', $opt2_sql, $opt3_sql, '$price', '$stock', '$sku')
             ");
 
             if (!$result) {
@@ -480,14 +458,6 @@ if (isset($_POST['save'])) {
                             html += `
                             <div class="variant-row">
 
-                                <div class="col image">
-                                    <label class="upload-box">
-                                        <span>+ Upload</span>
-                                        <input type="file" name="variant_image[]" hidden>
-                                        <img class="preview-img" style="display:none;">
-                                    </label>
-                                </div>
-
                                 <div class="col option">${val1}</div>
 
                                 <input type="hidden" name="option1_value[]" value="${val1}">
@@ -518,14 +488,6 @@ if (isset($_POST['save'])) {
 
                                 html += `
                                 <div class="variant-row">
-
-                                    <div class="col image">
-                                        <label class="upload-box">
-                                            <span>+ Upload</span>
-                                            <input type="file" name="variant_image[]" hidden>
-                                            <img class="preview-img" style="display:none;">
-                                        </label>
-                                    </div>
 
                                     <div class="col option">${combined}</div>
 
@@ -560,14 +522,6 @@ if (isset($_POST['save'])) {
 
                                     html += `
                                     <div class="variant-row">
-
-                                        <div class="col image">
-                                            <label class="upload-box">
-                                                <span>+ Upload</span>
-                                                <input type="file" name="variant_image[]" hidden>
-                                                <img class="preview-img" style="display:none;">
-                                            </label>
-                                        </div>
 
                                         <div class="col option">${combined}</div>
 
@@ -742,27 +696,6 @@ if (isset($_POST['save'])) {
 
                     // RE-RENDER LAST
                     renderImages();
-                }
-            });
-
-            document.addEventListener('change', function (e) {
-                if (e.target.name === 'variant_image[]') {
-
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    const container = e.target.closest('.upload-box');
-                    const img = container.querySelector('.preview-img');
-                    const text = container.querySelector('span');
-
-                    reader.onload = function (event) {
-                        img.src = event.target.result;
-                        img.style.display = 'block';
-                        text.style.display = 'none';
-                    };
-
-                    reader.readAsDataURL(file);
                 }
             });
 
