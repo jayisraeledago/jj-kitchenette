@@ -7,4 +7,5 @@ return [
     'encryption' => getenv('MAIL_ENCRYPTION') ?: 'tls',
     'from_email' => getenv('MAIL_FROM_EMAIL') ?: getenv('MAIL_USERNAME') ?: '',
     'from_name' => getenv('MAIL_FROM_NAME') ?: "J&J's Kitchenette",
+    'brevo_api_key' => getenv('BREVO_API_KEY') ?: '',
 ];

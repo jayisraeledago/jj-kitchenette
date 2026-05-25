@@ -59,9 +59,90 @@ function appMailPrepareHtml(string $htmlBody): string
     return '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">' . $css . '</head><body style="margin:0;padding:0;">' . $htmlBody . '</body></html>';
 }
 
+function sendBrevoMail(array $config, string $toEmail, string $toName, string $subject, string $htmlBody, string $plainBody = '', array $replyTo = [], array $ccRecipients = []): bool
+{
+    if (empty($config['brevo_api_key']) || empty($config['from_email'])) {
+        error_log('Mail error: BREVO_API_KEY and MAIL_FROM_EMAIL must be configured.');
+        return false;
+    }
+
+    $payload = [
+        'sender' => [
+            'name' => $config['from_name'] ?: "J&J's Kitchenette",
+            'email' => $config['from_email'],
+        ],
+        'to' => [
+            [
+                'email' => $toEmail,
+                'name' => $toName,
+            ],
+        ],
+        'subject' => $subject,
+        'htmlContent' => appMailPrepareHtml($htmlBody),
+        'textContent' => $plainBody !== '' ? $plainBody : trim(strip_tags($htmlBody)),
+    ];
+
+    $cc = [];
+    foreach ($ccRecipients as $ccRecipient) {
+        $ccEmail = $ccRecipient['email'] ?? '';
+        if (filter_var($ccEmail, FILTER_VALIDATE_EMAIL)) {
+            $cc[] = [
+                'email' => $ccEmail,
+                'name' => $ccRecipient['name'] ?? '',
+            ];
+        }
+    }
+
+    if ($cc) {
+        $payload['cc'] = $cc;
+    }
+
+    if (!empty($replyTo['email']) && filter_var($replyTo['email'], FILTER_VALIDATE_EMAIL)) {
+        $payload['replyTo'] = [
+            'email' => $replyTo['email'],
+            'name' => $replyTo['name'] ?? '',
+        ];
+    }
+
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'accept: application/json',
+            'api-key: ' . $config['brevo_api_key'],
+            'content-type: application/json',
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 15,
+    ]);
+
+    $response = curl_exec($ch);
+    $statusCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        error_log('Mail error: Brevo request failed. ' . $curlError);
+        return false;
+    }
+
+    if ($statusCode < 200 || $statusCode >= 300) {
+        error_log('Mail error: Brevo returned HTTP ' . $statusCode . ' - ' . $response);
+        return false;
+    }
+
+    return true;
+}
+
 function sendAppMail(string $toEmail, string $toName, string $subject, string $htmlBody, string $plainBody = '', array $embeddedImages = [], array $replyTo = [], array $ccRecipients = []): bool
 {
     $config = appMailConfig();
+
+    if (!empty($config['brevo_api_key'])) {
+        return sendBrevoMail($config, $toEmail, $toName, $subject, $htmlBody, $plainBody, $replyTo, $ccRecipients);
+    }
+
     $mail = new PHPMailer(true);
 
     try {
