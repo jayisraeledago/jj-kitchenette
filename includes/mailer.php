@@ -17,6 +17,34 @@ function appMailConfig(): array
     return require $exampleConfig;
 }
 
+function appPublicUrl(): string
+{
+    $configuredUrl = trim((string) (getenv('APP_URL') ?: ''));
+    if ($configuredUrl !== '') {
+        return rtrim($configuredUrl, '/');
+    }
+
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if ($host !== '') {
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'https';
+        return $scheme . '://' . $host;
+    }
+
+    return '';
+}
+
+function appMailLogoHtml(int $width = 170): string
+{
+    $publicUrl = appPublicUrl();
+
+    if ($publicUrl !== '') {
+        $safeUrl = htmlspecialchars($publicUrl . '/assets/images/kitchenette-logo.svg', ENT_QUOTES, 'UTF-8');
+        return '<img src="' . $safeUrl . '" width="' . $width . '" alt="J&amp;J&apos;s Kitchenette" style="display:block;border:0;width:' . $width . 'px;max-width:80%;height:auto;margin:0 auto;">';
+    }
+
+    return '<div style="font-size:28px;font-weight:800;color:#125827;text-align:center;">J&amp;J&apos;s Kitchenette</div>';
+}
+
 function appMailResponsiveCss(): string
 {
     return <<<CSS
@@ -43,6 +71,12 @@ function appMailResponsiveCss(): string
     .email-detail-icon { padding-bottom: 8px !important; }
     .email-footer-stack, .email-footer-stack tbody, .email-footer-stack tr, .email-footer-stack td { display: block !important; width: 100% !important; text-align: center !important; }
     .email-footer-social { padding-top: 10px !important; }
+    .email-line-items, .email-line-items tbody, .email-line-items tr, .email-line-items td { display: block !important; width: 100% !important; }
+    .email-line-items thead { display: none !important; }
+    .email-line-items tr { border-bottom: 1px solid #e7eee4 !important; padding: 10px 0 !important; }
+    .email-line-items td { border-bottom: 0 !important; padding: 4px 0 !important; text-align: left !important; }
+    .email-money-row td { display: table-cell !important; width: auto !important; }
+    .email-break { word-break: break-word !important; overflow-wrap: anywhere !important; }
 }
 </style>
 CSS;

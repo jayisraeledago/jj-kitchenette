@@ -6,6 +6,8 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     envVars:
+      - key: APP_URL
+        value: https://jj-kitchenette.onrender.com
       - key: DB_HOST
         sync: false
       - key: DB_PORT

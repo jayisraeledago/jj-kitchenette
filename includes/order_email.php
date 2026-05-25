@@ -149,11 +149,7 @@ function sendCustomerOrderDetailsEmail(mysqli $conn, int $orderId, string $conte
         ? 'Your order has been updated. Please review the current items and total below.'
         : 'We received your order. Here are the details for your records.';
 
-    $logoPath = __DIR__ . '/../assets/images/kitchenette-logo.svg';
-    $embeddedImages = file_exists($logoPath) ? ['kitchenetteLogo' => $logoPath] : [];
-    $logoHtml = file_exists($logoPath)
-        ? '<img src="cid:kitchenetteLogo" width="160" alt="J&J\'s Kitchenette" style="display:block;border:0;max-width:160px;height:auto;margin:0 auto;">'
-        : '<div style="font-size:28px;font-weight:800;color:#125827;text-align:center;">J&amp;J&apos;s Kitchenette</div>';
+    $logoHtml = appMailLogoHtml(160);
 
     $activeRows = '';
     $canceledRows = '';
@@ -182,7 +178,7 @@ function sendCustomerOrderDetailsEmail(mysqli $conn, int $orderId, string $conte
         $row = "
             <tr>
                 <td style=\"padding:12px 0;border-bottom:1px solid #e7eee4;\">
-                    <strong style=\"color:#1f2937;\">{$safeTitle}</strong>
+                    <strong class=\"email-break\" style=\"color:#1f2937;\">{$safeTitle}</strong>
                     <span style=\"display:block;color:#64748b;font-size:13px;margin-top:3px;\">{$safeOptions}</span>
                     <span style=\"display:block;color:#64748b;font-size:13px;margin-top:3px;\">SKU: {$safeSku}</span>
                 </td>
@@ -195,7 +191,7 @@ function sendCustomerOrderDetailsEmail(mysqli $conn, int $orderId, string $conte
             $canceledRows .= "
                 <tr>
                     <td style=\"padding:12px 0;border-bottom:1px solid #f3cccc;\">
-                        <strong style=\"color:#991b1b;\">{$safeTitle}</strong>
+                        <strong class=\"email-break\" style=\"color:#991b1b;\">{$safeTitle}</strong>
                         <span style=\"display:block;color:#b45309;font-size:13px;margin-top:3px;\">{$safeOptions}</span>
                         <span style=\"display:block;color:#991b1b;font-size:13px;margin-top:3px;\">SKU: {$safeSku}</span>
                         <span style=\"display:block;color:#991b1b;font-size:13px;margin-top:3px;\">Reason: {$safeReason}</span>
@@ -219,13 +215,13 @@ function sendCustomerOrderDetailsEmail(mysqli $conn, int $orderId, string $conte
     if ($canceledRows !== '') {
         $canceledSection = "
             <h2 style=\"margin:28px 0 10px;font-size:18px;color:#991b1b;\">Canceled Items</h2>
-            <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;background:#fff7f7;border:1px solid #fecaca;border-radius:10px;overflow:hidden;\">
-                <tr>
+            <table class=\"email-line-items\" role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;background:#fff7f7;border:1px solid #fecaca;border-radius:10px;overflow:hidden;\">
+                <thead><tr>
                     <th align=\"left\" style=\"padding:10px 0;color:#991b1b;font-size:12px;text-transform:uppercase;\">Item</th>
                     <th align=\"center\" style=\"padding:10px;color:#991b1b;font-size:12px;text-transform:uppercase;\">Qty</th>
                     <th align=\"right\" style=\"padding:10px;color:#991b1b;font-size:12px;text-transform:uppercase;\">Price</th>
                     <th align=\"right\" style=\"padding:10px 0;color:#991b1b;font-size:12px;text-transform:uppercase;\">Status</th>
-                </tr>
+                </tr></thead>
                 {$canceledRows}
             </table>";
     }
@@ -272,22 +268,22 @@ function sendCustomerOrderDetailsEmail(mysqli $conn, int $orderId, string $conte
                 </table>
 
                 <h2 style="margin:0 0 8px;font-size:17px;color:#1f2937;">Ordered Items</h2>
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
-                    <tr>
+                <table class="email-line-items" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                    <thead><tr>
                         <th align="left" style="padding:10px 0;color:#64748b;font-size:12px;text-transform:uppercase;">Item</th>
                         <th align="center" style="padding:10px;color:#64748b;font-size:12px;text-transform:uppercase;">Qty</th>
                         <th align="right" style="padding:10px;color:#64748b;font-size:12px;text-transform:uppercase;">Price</th>
                         <th align="right" style="padding:10px 0;color:#64748b;font-size:12px;text-transform:uppercase;">Total</th>
-                    </tr>
+                    </tr></thead>
                     {$activeRows}
                 </table>
 
                 {$canceledSection}
 
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin-top:20px;background:#f8fbf7;border-radius:10px;">
-                    <tr><td style="padding:14px 16px;color:#64748b;">Subtotal</td><td align="right" style="padding:14px 16px;font-weight:800;">__ORDER_SUBTOTAL__</td></tr>
-                    <tr><td style="padding:0 16px 14px;color:#64748b;">Delivery</td><td align="right" style="padding:0 16px 14px;font-weight:800;">__ORDER_DELIVERY__</td></tr>
-                    <tr><td style="border-top:1px solid #dfeadf;padding:14px 16px;color:#125827;font-size:18px;font-weight:900;">Total</td><td align="right" style="border-top:1px solid #dfeadf;padding:14px 16px;color:#125827;font-size:18px;font-weight:900;">__ORDER_TOTAL__</td></tr>
+                    <tr class="email-money-row"><td style="padding:14px 16px;color:#64748b;">Subtotal</td><td align="right" style="padding:14px 16px;font-weight:800;">__ORDER_SUBTOTAL__</td></tr>
+                    <tr class="email-money-row"><td style="padding:0 16px 14px;color:#64748b;">Delivery</td><td align="right" style="padding:0 16px 14px;font-weight:800;">__ORDER_DELIVERY__</td></tr>
+                    <tr class="email-money-row"><td style="border-top:1px solid #dfeadf;padding:14px 16px;color:#125827;font-size:18px;font-weight:900;">Total</td><td align="right" style="border-top:1px solid #dfeadf;padding:14px 16px;color:#125827;font-size:18px;font-weight:900;">__ORDER_TOTAL__</td></tr>
                 </table>
 
                 <h2 style="margin:22px 0 8px;font-size:17px;color:#1f2937;">Shipping Details</h2>
@@ -327,5 +323,5 @@ HTML;
         . "Total: " . orderEmailPlainMoney($order['total']) . "\n\n"
         . "Shipping details:\n{$plainShipping}";
 
-    return sendAppMail($toEmail, $customerName, $subject, $html, $plain, $embeddedImages);
+    return sendAppMail($toEmail, $customerName, $subject, $html, $plain);
 }

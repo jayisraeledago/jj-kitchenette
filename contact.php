@@ -65,11 +65,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $safeEmail = htmlspecialchars($formValues['email'], ENT_QUOTES, 'UTF-8');
         $safeMessage = nl2br(htmlspecialchars($formValues['message'], ENT_QUOTES, 'UTF-8'));
         $safeSubmittedAt = htmlspecialchars($submittedAt, ENT_QUOTES, 'UTF-8');
-        $logoPath = __DIR__ . '/assets/images/kitchenette-logo.svg';
-        $embeddedImages = file_exists($logoPath) ? ['kitchenetteLogo' => $logoPath] : [];
-        $logoHtml = file_exists($logoPath)
-            ? '<img src="cid:kitchenetteLogo" width="170" alt="J&amp;J&apos;s Kitchenette" style="display:block;border:0;max-width:170px;height:auto;margin:0 auto;">'
-            : '<div style="font-size:30px;font-weight:800;color:#125827;text-align:center;">J&amp;J&apos;s Kitchenette</div>';
+        $logoHtml = appMailLogoHtml(170);
         $htmlBody = "
             <div class=\"email-wrap\" style=\"margin:0;padding:24px 14px;background:#f7fbf5;font-family:Arial,Helvetica,sans-serif;color:#111827;\">
                 <div class=\"email-container\" style=\"max-width:640px;margin:0 auto;background:#fbfdf9;border:1px solid #e0eadb;border-radius:12px;padding:18px;box-shadow:0 12px 28px rgba(18,88,39,0.08);\">
@@ -174,7 +170,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             . "Submitted: {$submittedAt}\n\n"
             . $formValues['message'];
 
-        if (sendAppMail($recipientEmail, $contactSettings['store_name'], $subject, $htmlBody, $plainBody, $embeddedImages, $replyTo, $ccRecipients)) {
+        if (sendAppMail($recipientEmail, $contactSettings['store_name'], $subject, $htmlBody, $plainBody, [], $replyTo, $ccRecipients)) {
             $contactNotice = 'Your message was sent. We will get back to you soon.';
             $formValues = ['name' => '', 'phone' => '', 'email' => '', 'message' => ''];
         } else {

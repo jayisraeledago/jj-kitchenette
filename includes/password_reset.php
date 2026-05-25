@@ -44,11 +44,7 @@ function sendPasswordResetCode(mysqli $conn, array $user): bool
 
     $safeName = htmlspecialchars(strtoupper($displayName), ENT_QUOTES, 'UTF-8');
     $safeCode = htmlspecialchars($code, ENT_QUOTES, 'UTF-8');
-    $logoPath = __DIR__ . '/../assets/images/kitchenette-logo.svg';
-    $embeddedImages = file_exists($logoPath) ? ['kitchenetteLogo' => $logoPath] : [];
-    $logoHtml = file_exists($logoPath)
-        ? '<img src="cid:kitchenetteLogo" width="170" alt="J&J\'s Kitchenette" style="display:block;border:0;max-width:170px;height:auto;margin:0 auto;">'
-        : '<div style="font-size:28px;font-weight:800;color:#125827;text-align:center;">J&amp;J&apos;s Kitchenette</div>';
+    $logoHtml = appMailLogoHtml(170);
 
     $html = <<<HTML
 <!doctype html>
@@ -120,7 +116,7 @@ function sendPasswordResetCode(mysqli $conn, array $user): bool
 HTML;
     $plain = "Your J&J's Kitchenette password reset code is {$code}. It expires in 15 minutes.";
 
-    return sendAppMail($email, $displayName, "J&J's Kitchenette password reset code", $html, $plain, $embeddedImages);
+    return sendAppMail($email, $displayName, "J&J's Kitchenette password reset code", $html, $plain);
 }
 
 function sendStaffInvitationCode(mysqli $conn, array $user, string $roleName): bool
@@ -148,13 +144,10 @@ function sendStaffInvitationCode(mysqli $conn, array $user, string $roleName): b
     $safeName = htmlspecialchars(strtoupper($displayName), ENT_QUOTES, 'UTF-8');
     $safeRole = htmlspecialchars(ucfirst($roleName), ENT_QUOTES, 'UTF-8');
     $safeCode = htmlspecialchars($code, ENT_QUOTES, 'UTF-8');
-    $setupUrl = 'http://localhost/store/reset-password.php?email=' . urlencode($email);
+    $baseUrl = appPublicUrl();
+    $setupUrl = ($baseUrl !== '' ? $baseUrl : 'https://jj-kitchenette.onrender.com') . '/store/reset-password.php?email=' . urlencode($email);
     $safeSetupUrl = htmlspecialchars($setupUrl, ENT_QUOTES, 'UTF-8');
-    $logoPath = __DIR__ . '/../assets/images/kitchenette-logo.svg';
-    $embeddedImages = file_exists($logoPath) ? ['kitchenetteLogo' => $logoPath] : [];
-    $logoHtml = file_exists($logoPath)
-        ? '<img src="cid:kitchenetteLogo" width="170" alt="J&J\'s Kitchenette" style="display:block;border:0;max-width:170px;height:auto;margin:0 auto;">'
-        : '<div style="font-size:28px;font-weight:800;color:#125827;text-align:center;">J&amp;J&apos;s Kitchenette</div>';
+    $logoHtml = appMailLogoHtml(170);
 
     $html = <<<HTML
 <!doctype html>
@@ -187,7 +180,7 @@ function sendStaffInvitationCode(mysqli $conn, array $user, string $roleName): b
 HTML;
     $plain = "You were invited as {$roleName} for J&J's Kitchenette. Use code {$code} to create your password at {$setupUrl}. It expires in 15 minutes.";
 
-    return sendAppMail($email, $displayName, "J&J's Kitchenette staff invitation", $html, $plain, $embeddedImages);
+    return sendAppMail($email, $displayName, "J&J's Kitchenette staff invitation", $html, $plain);
 }
 
 function findUserByEmail(mysqli $conn, string $email, array $allowedRoles = []): ?array
