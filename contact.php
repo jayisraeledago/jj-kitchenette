@@ -90,59 +90,53 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
                         <div style=\"height:1px;background:#dfe7dc;margin:0 0 20px;\"></div>
 
-                        <table class=\"email-stack\" role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
-                            <tr>
-                                <td valign=\"top\" width=\"45%\" style=\"padding:0 22px 0 0;border-right:1px solid #dfe7dc;\">
-                                    <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
-                                        <tr>
-                                            <td width=\"54\" valign=\"top\" style=\"padding:0 14px 18px 0;\">
-                                                <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9679;</div>
-                                            </td>
-                                            <td style=\"padding:0 0 18px;border-bottom:1px dashed #e2e8df;\">
-                                                <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Name</strong>
-                                                <span style=\"display:block;color:#00521f;font-size:14px;font-weight:900;\">{$safeName}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width=\"54\" valign=\"top\" style=\"padding:18px 14px 18px 0;\">
-                                                <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9993;</div>
-                                            </td>
-                                            <td style=\"padding:18px 0;border-bottom:1px dashed #e2e8df;\">
-                                                <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Email</strong>
-                                                <a href=\"mailto:{$safeEmail}\" style=\"color:#2563eb;font-size:14px;font-weight:700;text-decoration:underline;\">{$safeEmail}</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width=\"54\" valign=\"top\" style=\"padding:18px 14px 18px 0;\">
-                                                <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9742;</div>
-                                            </td>
-                                            <td style=\"padding:18px 0;border-bottom:1px dashed #e2e8df;\">
-                                                <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Phone</strong>
-                                                <span style=\"display:block;color:#111827;font-size:14px;font-weight:700;\">{$safePhone}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width=\"54\" valign=\"top\" style=\"padding:18px 14px 0 0;\">
-                                                <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9635;</div>
-                                            </td>
-                                            <td style=\"padding:18px 0 0;\">
-                                                <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Submitted</strong>
-                                                <span style=\"display:block;color:#111827;font-size:14px;\">{$safeSubmittedAt}</span>
-                                            </td>
-                                        </tr>
-                                    </table>
+                        <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
+                            <tr class=\"email-detail-row\">
+                                <td class=\"email-detail-icon\" width=\"54\" valign=\"top\" style=\"padding:0 14px 14px 0;\">
+                                    <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9679;</div>
                                 </td>
-
-                                <td valign=\"top\" style=\"padding:0 0 0 22px;\">
-                                    <div style=\"display:inline-block;background:#e9f7ed;color:#125827;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:900;margin:8px 0 12px;\">&#128172; Message</div>
-                                    <div class=\"email-copy\" style=\"border:1px solid #dfe7dc;border-radius:8px;padding:18px;background:#fff;color:#111827;font-size:14px;line-height:1.55;min-height:90px;\">
-                                        <div style=\"color:#125827;font-size:28px;font-weight:900;line-height:1;margin-bottom:12px;\">&ldquo;</div>
-                                        <div>{$safeMessage}</div>
-                                        <div style=\"color:#125827;font-size:28px;font-weight:900;line-height:1;text-align:right;margin-top:12px;\">&rdquo;</div>
-                                    </div>
+                                <td style=\"padding:0 0 14px;border-bottom:1px dashed #e2e8df;\">
+                                    <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Name</strong>
+                                    <span style=\"display:block;color:#00521f;font-size:15px;font-weight:900;word-break:break-word;\">{$safeName}</span>
+                                </td>
+                            </tr>
+                            <tr class=\"email-detail-row\">
+                                <td class=\"email-detail-icon\" width=\"54\" valign=\"top\" style=\"padding:14px 14px 14px 0;\">
+                                    <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9993;</div>
+                                </td>
+                                <td style=\"padding:14px 0;border-bottom:1px dashed #e2e8df;\">
+                                    <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Email</strong>
+                                    <a href=\"mailto:{$safeEmail}\" style=\"color:#2563eb;font-size:15px;font-weight:700;text-decoration:underline;word-break:break-word;\">{$safeEmail}</a>
+                                </td>
+                            </tr>
+                            <tr class=\"email-detail-row\">
+                                <td class=\"email-detail-icon\" width=\"54\" valign=\"top\" style=\"padding:14px 14px 14px 0;\">
+                                    <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9742;</div>
+                                </td>
+                                <td style=\"padding:14px 0;border-bottom:1px dashed #e2e8df;\">
+                                    <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Phone</strong>
+                                    <span style=\"display:block;color:#111827;font-size:15px;font-weight:700;word-break:break-word;\">{$safePhone}</span>
+                                </td>
+                            </tr>
+                            <tr class=\"email-detail-row\">
+                                <td class=\"email-detail-icon\" width=\"54\" valign=\"top\" style=\"padding:14px 14px 18px 0;\">
+                                    <div style=\"width:42px;height:42px;border-radius:10px;background:#e9f7ed;color:#125827;text-align:center;line-height:42px;font-size:20px;\">&#9635;</div>
+                                </td>
+                                <td style=\"padding:14px 0 18px;\">
+                                    <strong style=\"display:block;color:#111827;font-size:13px;margin-bottom:6px;\">Submitted</strong>
+                                    <span style=\"display:block;color:#111827;font-size:15px;word-break:break-word;\">{$safeSubmittedAt}</span>
                                 </td>
                             </tr>
                         </table>
+
+                        <div style=\"height:1px;background:#dfe7dc;margin:4px 0 18px;\"></div>
+
+                        <div style=\"display:inline-block;background:#e9f7ed;color:#125827;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:900;margin:0 0 12px;\">&#128172; Message</div>
+                        <div class=\"email-copy\" style=\"border:1px solid #dfe7dc;border-radius:8px;padding:18px;background:#fff;color:#111827;font-size:15px;line-height:1.6;\">
+                            <div style=\"color:#125827;font-size:28px;font-weight:900;line-height:1;margin-bottom:12px;\">&ldquo;</div>
+                            <div style=\"word-break:break-word;\">{$safeMessage}</div>
+                            <div style=\"color:#125827;font-size:28px;font-weight:900;line-height:1;text-align:right;margin-top:12px;\">&rdquo;</div>
+                        </div>
 
                         <div class=\"email-copy\" style=\"margin-top:20px;border:1px solid #dfe7dc;border-radius:8px;background:#fbfdf9;padding:14px 16px;color:#374151;font-size:13px;line-height:1.5;\">
                             <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
@@ -160,10 +154,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     </div>
 
                     <div style=\"height:3px;background:#125827;margin:0 0 14px;\"></div>
-                    <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
+                    <table class=\"email-footer-stack\" role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse;\">
                         <tr>
                             <td style=\"color:#125827;font-size:13px;font-weight:800;padding:4px 8px;\">&#127793; Fresh ingredients. Made with love. Delivered to you.</td>
-                            <td align=\"right\" style=\"padding:4px 8px;white-space:nowrap;\">
+                            <td class=\"email-footer-social\" align=\"right\" style=\"padding:4px 8px;white-space:nowrap;\">
                                 <span style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#0f7a34;color:#fff;text-align:center;line-height:30px;font-weight:900;margin-left:8px;\">f</span>
                                 <span style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#0f7a34;color:#fff;text-align:center;line-height:30px;font-weight:900;margin-left:8px;\">ig</span>
                                 <span style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#0f7a34;color:#fff;text-align:center;line-height:30px;font-weight:900;margin-left:8px;\">@</span>

@@ -39,6 +39,10 @@ function appMailResponsiveCss(): string
     .email-copy { font-size: 14px !important; line-height: 1.5 !important; }
     .email-footer { padding: 14px 16px !important; font-size: 12px !important; }
     .email-hide-mobile { display: none !important; max-height: 0 !important; overflow: hidden !important; }
+    .email-detail-row td { display: block !important; width: 100% !important; padding-right: 0 !important; }
+    .email-detail-icon { padding-bottom: 8px !important; }
+    .email-footer-stack, .email-footer-stack tbody, .email-footer-stack tr, .email-footer-stack td { display: block !important; width: 100% !important; text-align: center !important; }
+    .email-footer-social { padding-top: 10px !important; }
 }
 </style>
 CSS;
