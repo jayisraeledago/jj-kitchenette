@@ -7,7 +7,8 @@ $statusLabels = [
     'pending' => 'Pending',
     'preparing' => 'Preparing',
     'shipped' => 'Shipped',
-    'delivered' => 'Delivered / Picked Up'
+    'delivered' => 'Delivered / Picked Up',
+    'canceled' => 'Canceled'
 ];
 
 function dashboardStatusLabel($status, $statusLabels)

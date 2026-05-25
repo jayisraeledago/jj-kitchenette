@@ -292,10 +292,10 @@ body {
 .modal-content {
     background: white;
     width: 100%;
-    max-width: 500px;
+    max-width: 460px;
 
-    padding: 30px;
-    border-radius: 18px;
+    padding: 24px;
+    border-radius: 12px;
 
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 
@@ -319,29 +319,31 @@ body {
     justify-content: space-between;
     align-items: center;
 
-    margin-bottom: 25px;
+    margin-bottom: 18px;
 }
 
 .close-modal {
-    font-size: 28px;
+    font-size: 26px;
     cursor: pointer;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    font-size: 13px;
+    margin-bottom: 6px;
     color: #666;
 }
 
 .form-group input {
     width: 100%;
-    padding: 12px;
+    min-height: 42px;
+    padding: 9px 12px;
     border: 1px solid #ddd;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 15px;
 }
 
@@ -349,8 +351,9 @@ body {
     background: black;
     color: white;
     border: none;
-    border-radius: 10px;
-    padding: 12px 18px;
+    border-radius: 8px;
+    min-height: 42px;
+    padding: 0 16px;
     cursor: pointer;
 }
 
@@ -458,6 +461,11 @@ body {
     color: #24723c;
 }
 
+.profile-order-status--canceled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
 .profile-order-meta {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -497,6 +505,168 @@ body {
 
 .profile-order-item:last-child {
     border-bottom: none;
+}
+
+.profile-order-item--canceled {
+    background: #fff7f7;
+    opacity: 0.78;
+}
+
+.profile-order-item__badge {
+    background: #fee2e2;
+    border-radius: 999px;
+    color: #b91c1c;
+    display: inline-flex;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 900;
+    margin-left: 6px;
+    padding: 3px 7px;
+    vertical-align: middle;
+}
+
+.orders-page-message {
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    font-size: 14px;
+    font-weight: 800;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+}
+
+.orders-page-message--success {
+    background: #e9f8ee;
+    border: 1px solid #bfe8cb;
+    color: #166534;
+}
+
+.orders-page-message--error {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #be123c;
+}
+
+.profile-cancel-order-form {
+    margin: 0;
+}
+
+.profile-cancel-order-form button {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    cursor: pointer;
+    display: inline-flex;
+    font-weight: 900;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 14px;
+}
+
+.profile-cancel-order-form button:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.customer-cancel-order-modal {
+    align-items: center;
+    background: rgba(15, 23, 42, 0.46);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    padding: 20px;
+    position: fixed;
+    z-index: 1200;
+}
+
+.customer-cancel-order-modal.is-open {
+    display: flex;
+}
+
+.customer-cancel-order-modal__panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+    max-width: 460px;
+    padding: 30px;
+    position: relative;
+    text-align: center;
+    width: min(100%, 460px);
+}
+
+.customer-cancel-order-modal__close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #475569;
+    cursor: pointer;
+    display: inline-flex;
+    height: 36px;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 36px;
+}
+
+.customer-cancel-order-modal__icon {
+    align-items: center;
+    background: #fef2f2;
+    border-radius: 50%;
+    color: #dc2626;
+    display: inline-flex;
+    font-size: 26px;
+    height: 62px;
+    justify-content: center;
+    margin-bottom: 16px;
+    width: 62px;
+}
+
+.customer-cancel-order-modal h2 {
+    color: #1f2a1f;
+    font-size: 24px;
+    margin: 0 0 10px;
+}
+
+.customer-cancel-order-modal p {
+    color: #66736a;
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.customer-cancel-order-modal__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.customer-cancel-order-modal__actions button {
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 1;
+    font-weight: 900;
+    gap: 8px;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.customer-cancel-order-modal__actions button:first-child {
+    background: #fff;
+    border: 1px solid #dbe6d8;
+    color: #1f2a1f;
+}
+
+.customer-cancel-order-modal__actions button:last-child {
+    background: #dc2626;
+    border: 1px solid #dc2626;
+    color: #fff;
 }
 
 .profile-order-item img {
@@ -549,9 +719,9 @@ body {
 
 .edit-address-btn,
 .delete-address-btn {
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
     border: none;
     border-radius: 50%;
     background: white;
@@ -560,7 +730,7 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: -4px;
+    margin-top: -2px;
 }
 
 .address-content {
@@ -572,14 +742,14 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 20px 0;
+    margin: 14px 0;
     font-size: 14px;
 }
 
 .edit-address-btn svg,
 .delete-address-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     color: #444;
 }
 
@@ -601,12 +771,12 @@ body {
 
 /* PROFILE DASHBOARD REFRESH */
 .account-page {
-    max-width: 1320px;
-    margin: 42px auto 56px;
+    max-width: 1180px;
+    margin: 28px auto 42px;
 }
 
 .profile-page-top {
-    margin-bottom: 26px;
+    margin-bottom: 18px;
 }
 
 .profile-page-top h1 {
@@ -614,28 +784,28 @@ body {
     color: #103f20;
     display: flex;
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 42px;
-    gap: 10px;
+    font-size: 36px;
+    gap: 8px;
     line-height: 1.05;
 }
 
 .profile-page-top h1 i {
     color: #86c46f;
-    font-size: 26px;
+    font-size: 22px;
 }
 
 .profile-page-top p {
     color: #4f584d;
-    font-size: 16px;
-    margin: 10px 0 0;
+    font-size: 14px;
+    margin: 7px 0 0;
 }
 
 .profile-orders-link {
     background: #125827;
     box-shadow: 0 12px 24px rgba(18, 88, 39, 0.2);
-    gap: 10px;
-    min-height: 48px;
-    padding: 0 20px;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
 }
 
 .profile-card {
@@ -645,7 +815,7 @@ body {
 }
 
 .profile-summary-card {
-    padding: 28px;
+    padding: 22px;
 }
 
 .profile-summary-card .profile-top {
@@ -655,7 +825,7 @@ body {
 .profile-identity {
     align-items: center;
     display: flex;
-    gap: 28px;
+    gap: 22px;
 }
 
 .profile-avatar-large {
@@ -664,36 +834,37 @@ body {
     border-radius: 50%;
     color: #6aa66b;
     display: flex;
-    flex: 0 0 118px;
-    font-size: 58px;
-    height: 118px;
+    flex: 0 0 92px;
+    font-size: 44px;
+    height: 92px;
     justify-content: center;
-    width: 118px;
+    width: 92px;
 }
 
 .profile-identity h3 {
     color: #1f2a1f;
-    font-size: 28px;
-    margin: 0 0 16px;
+    font-size: 24px;
+    margin: 0 0 10px;
 }
 
 .profile-identity p {
     align-items: center;
     color: #4b5563;
     display: flex;
-    gap: 10px;
-    margin: 0 0 12px;
+    font-size: 14px;
+    gap: 8px;
+    margin: 0 0 8px;
 }
 
 .profile-identity p i {
     color: #6b7280;
-    width: 18px;
+    width: 16px;
 }
 
 .profile-summary-actions {
     border-left: 1px solid #dfe5da;
-    min-width: 320px;
-    padding-left: 42px;
+    min-width: 260px;
+    padding-left: 30px;
 }
 
 .edit-btn {
@@ -702,30 +873,33 @@ body {
     border-radius: 8px;
     color: #125827;
     display: inline-flex;
-    gap: 9px;
-    min-height: 46px;
-    padding: 0 18px;
+    font-size: 14px;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 15px;
 }
 
 .profile-member-info {
     display: grid;
-    gap: 10px;
-    margin-top: 22px;
+    gap: 6px;
+    margin-top: 16px;
 }
 
 .profile-member-info span {
     color: #4b5563;
+    font-size: 13px;
 }
 
 .profile-member-info strong {
     align-items: center;
     color: #4b5563;
     display: flex;
-    gap: 10px;
+    font-size: 14px;
+    gap: 8px;
 }
 
 .address-panel {
-    padding: 28px;
+    padding: 22px;
 }
 
 .address-header {
@@ -735,7 +909,7 @@ body {
 .address-title {
     align-items: center;
     display: flex;
-    gap: 16px;
+    gap: 12px;
 }
 
 .address-title > i {
@@ -744,20 +918,21 @@ body {
     border-radius: 50%;
     color: #125827;
     display: inline-flex;
-    flex: 0 0 54px;
-    height: 54px;
+    flex: 0 0 44px;
+    height: 44px;
     justify-content: center;
-    width: 54px;
+    width: 44px;
 }
 
 .address-title h3 {
     color: #1f2a1f;
-    font-size: 24px;
-    margin: 0 0 6px;
+    font-size: 21px;
+    margin: 0 0 4px;
 }
 
 .address-title p {
     color: #4b5563;
+    font-size: 14px;
     margin: 0;
 }
 
@@ -768,23 +943,24 @@ body {
     box-shadow: 0 12px 24px rgba(18, 88, 39, 0.18);
     color: #fff;
     display: inline-flex;
-    gap: 10px;
-    min-height: 46px;
-    padding: 0 18px;
+    font-size: 14px;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 15px;
 }
 
 .address-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
+    gap: 14px;
 }
 
 .address-box {
     background: #fff;
     border: 1px solid #e0e6dc;
     border-radius: 8px;
-    min-height: 170px;
-    padding: 22px;
+    min-height: 142px;
+    padding: 16px;
     position: relative;
     width: auto;
 }
@@ -793,11 +969,11 @@ body {
     background: #fbfef8;
     border-color: #167a3d;
     box-shadow: inset 0 0 0 1px #167a3d;
-    padding-bottom: 58px;
+    padding-bottom: 46px;
 }
 
 .address-top {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
 }
 
 .default-label {
@@ -806,22 +982,22 @@ body {
     border-radius: 999px;
     color: #167a3d;
     display: inline-flex;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
-    gap: 6px;
+    gap: 5px;
     margin: 0;
-    min-height: 28px;
-    padding: 0 12px;
+    min-height: 24px;
+    padding: 0 10px;
 }
 
 .default-placeholder {
-    height: 28px;
+    height: 24px;
 }
 
 .address-actions {
     position: absolute;
-    right: 18px;
-    top: 20px;
+    right: 14px;
+    top: 14px;
 }
 
 .edit-address-btn,
@@ -840,33 +1016,34 @@ body {
 
 .address-content {
     display: grid;
-    gap: 7px;
+    gap: 5px;
     line-height: 1.5;
     margin-top: 0;
 }
 
 .address-content strong {
     color: #1f2a1f;
-    font-size: 16px;
+    font-size: 15px;
     text-transform: uppercase;
 }
 
 .address-content span {
     color: #1f2937;
+    font-size: 14px;
 }
 
 .address-check {
     align-items: center;
     background: #dff1df;
     border-radius: 50%;
-    bottom: 18px;
+    bottom: 14px;
     color: #2c9b4b;
     display: inline-flex;
-    height: 28px;
+    height: 24px;
     justify-content: center;
-    left: 22px;
+    left: 16px;
     position: absolute;
-    width: 28px;
+    width: 24px;
 }
 
 .security-tip {
@@ -875,9 +1052,9 @@ body {
     border: 1px solid #e4ecdf;
     border-radius: 8px;
     display: flex;
-    gap: 18px;
-    margin: 26px 0 18px;
-    padding: 20px 24px;
+    gap: 14px;
+    margin: 18px 0 14px;
+    padding: 16px 18px;
 }
 
 .security-tip > i {
@@ -886,19 +1063,21 @@ body {
     border-radius: 50%;
     color: #2c9b4b;
     display: inline-flex;
-    flex: 0 0 56px;
-    height: 56px;
+    flex: 0 0 44px;
+    height: 44px;
     justify-content: center;
-    width: 56px;
+    width: 44px;
 }
 
 .security-tip h3 {
     color: #125827;
-    margin: 0 0 6px;
+    font-size: 17px;
+    margin: 0 0 4px;
 }
 
 .security-tip p {
     color: #1f2937;
+    font-size: 14px;
     margin: 0;
 }
 
@@ -912,13 +1091,14 @@ body {
     border-radius: 8px;
     color: #b42323;
     display: inline-flex;
-    gap: 10px;
-    min-height: 48px;
-    padding: 0 18px;
+    font-size: 14px;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
 }
 
 .confirm-modal-content {
-    max-width: 420px;
+    max-width: 390px;
     text-align: center;
 }
 
@@ -928,17 +1108,17 @@ body {
     border-radius: 50%;
     color: #d71920;
     display: inline-flex;
-    font-size: 24px;
-    height: 64px;
+    font-size: 21px;
+    height: 54px;
     justify-content: center;
-    margin-bottom: 18px;
-    width: 64px;
+    margin-bottom: 14px;
+    width: 54px;
 }
 
 .confirm-modal-content h2 {
     color: #1f2a1f;
-    font-size: 24px;
-    margin: 0 0 10px;
+    font-size: 22px;
+    margin: 0 0 8px;
 }
 
 .confirm-modal-content p {
@@ -951,7 +1131,7 @@ body {
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-top: 26px;
+    margin-top: 20px;
 }
 
 .confirm-cancel-btn,
@@ -959,11 +1139,11 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
-    min-height: 44px;
-    min-width: 112px;
-    padding: 0 18px;
+    min-height: 40px;
+    min-width: 104px;
+    padding: 0 16px;
 }
 
 .confirm-cancel-btn {
@@ -999,28 +1179,226 @@ body {
 }
 
 @media (max-width: 640px) {
+    .account-page {
+        margin: 18px auto 28px;
+        padding: 0 14px;
+    }
+
     .profile-page-top {
         align-items: flex-start;
         flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
     }
 
     .profile-page-top h1 {
-        font-size: 34px;
+        font-size: 28px;
+    }
+
+    .profile-page-top p {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .profile-orders-link {
+        min-height: 40px;
+        width: 100%;
+    }
+
+    .profile-card,
+    .profile-summary-card,
+    .address-panel {
+        box-shadow: none;
+        margin-bottom: 14px;
+        padding: 16px;
+    }
+
+    .profile-summary-card .profile-top {
+        gap: 14px;
+    }
+
+    .profile-identity {
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .profile-avatar-large {
-        flex-basis: 88px;
-        font-size: 42px;
-        height: 88px;
-        width: 88px;
+        flex-basis: 58px;
+        font-size: 26px;
+        height: 58px;
+        width: 58px;
+    }
+
+    .profile-identity h3 {
+        font-size: 20px;
+        margin-bottom: 7px;
+    }
+
+    .profile-identity p {
+        align-items: flex-start;
+        font-size: 13px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-summary-actions {
+        padding-top: 14px;
+    }
+
+    .edit-btn,
+    .add-btn,
+    .logout-btn {
+        justify-content: center;
+        min-height: 40px;
+        width: 100%;
+    }
+
+    .profile-member-info {
+        background: #f6faf4;
+        border: 1px solid #e4ecdf;
+        border-radius: 8px;
+        margin-top: 10px;
+        padding: 10px 12px;
+    }
+
+    .address-header {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .address-title {
+        gap: 10px;
+    }
+
+    .address-title > i {
+        flex-basis: 38px;
+        height: 38px;
+        width: 38px;
+    }
+
+    .address-title h3 {
+        font-size: 19px;
+    }
+
+    .address-title p {
+        font-size: 13px;
+        line-height: 1.4;
     }
 
     .address-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .address-box {
+        min-height: auto;
+        padding: 14px;
+    }
+
+    .address-box.is-default {
+        padding-bottom: 42px;
+    }
+
+    .address-actions {
+        right: 12px;
+        top: 12px;
+    }
+
+    .address-content {
+        gap: 4px;
+        padding-right: 70px;
+    }
+
+    .address-content strong {
+        font-size: 14px;
+    }
+
+    .address-content span {
+        font-size: 13px;
+        overflow-wrap: anywhere;
     }
 
     .security-tip {
         align-items: flex-start;
+        gap: 12px;
+        margin: 14px 0 12px;
+        padding: 14px;
+    }
+
+    .security-tip > i {
+        flex-basis: 38px;
+        height: 38px;
+        width: 38px;
+    }
+
+    .security-tip h3 {
+        font-size: 15px;
+    }
+
+    .security-tip p {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .profile-footer {
+        margin-top: 0;
+    }
+
+    .modal {
+        align-items: flex-end;
+        padding: 0 10px 10px;
+        z-index: 1200;
+    }
+
+    .modal-content {
+        border-radius: 12px;
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        padding: 18px;
+    }
+
+    .modal-header {
+        margin-bottom: 14px;
+    }
+
+    .modal-header h2,
+    .confirm-modal-content h2 {
+        font-size: 21px;
+    }
+
+    .form-group {
+        margin-bottom: 11px;
+    }
+
+    .form-group input {
+        font-size: 14px;
+        min-height: 40px;
+    }
+
+    .save-btn {
+        min-height: 42px;
+        width: 100%;
+    }
+
+    .default-check {
+        align-items: flex-start;
+        display: flex;
+        font-size: 13px;
+        gap: 8px;
+        line-height: 1.4;
+        margin: 4px 0 12px;
+    }
+
+    .confirm-modal-actions {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .confirm-cancel-btn,
+    .confirm-delete-btn {
+        min-width: 0;
+        width: 100%;
     }
 }
 
@@ -1030,13 +1408,13 @@ body {
     color: #103f20;
     display: flex;
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 44px;
-    gap: 12px;
+    font-size: 36px;
+    gap: 8px;
 }
 
 .orders-page-top h1 i {
     color: #86c46f;
-    font-size: 28px;
+    font-size: 22px;
 }
 
 .orders-dashboard {
@@ -1044,15 +1422,15 @@ body {
     border: 1px solid #e4e9df;
     border-radius: 8px;
     box-shadow: 0 18px 44px rgba(24, 45, 30, 0.08);
-    padding: 26px;
+    padding: 20px;
 }
 
 .orders-controls {
     align-items: center;
     display: flex;
-    gap: 18px;
+    gap: 14px;
     justify-content: space-between;
-    margin-bottom: 26px;
+    margin-bottom: 18px;
 }
 
 .orders-tabs {
@@ -1067,12 +1445,12 @@ body {
     border: 1px solid #dfe6dd;
     color: #125827;
     display: inline-flex;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     justify-content: center;
-    min-height: 46px;
-    min-width: 112px;
-    padding: 0 18px;
+    min-height: 40px;
+    min-width: 98px;
+    padding: 0 14px;
     text-decoration: none;
 }
 
@@ -1096,8 +1474,8 @@ body {
     border: 1px solid #dfe6dd;
     border-radius: 8px;
     display: grid;
-    grid-template-columns: minmax(260px, 1fr) 44px;
-    min-height: 46px;
+    grid-template-columns: minmax(240px, 1fr) 40px;
+    min-height: 40px;
     overflow: hidden;
 }
 
@@ -1106,7 +1484,7 @@ body {
     font: inherit;
     height: 100%;
     outline: none;
-    padding: 0 14px;
+    padding: 0 12px;
 }
 
 .orders-search button {
@@ -1121,7 +1499,7 @@ body {
 }
 
 .orders-dashboard .profile-orders {
-    gap: 24px;
+    gap: 16px;
 }
 
 .order-history-card {
@@ -1129,20 +1507,30 @@ body {
     border: 1px solid #dfe6dd;
     border-radius: 8px;
     box-shadow: 0 12px 30px rgba(24, 45, 30, 0.06);
+    cursor: pointer;
     display: grid;
-    gap: 22px;
-    grid-template-columns: 74px minmax(0, 1fr);
-    padding: 24px;
+    gap: 16px;
+    grid-template-columns: 58px minmax(0, 1fr);
+    padding: 18px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.order-history-card:hover,
+.order-history-card:focus-visible {
+    border-color: #125827;
+    box-shadow: 0 16px 34px rgba(24, 45, 30, 0.12);
+    outline: none;
+    transform: translateY(-1px);
 }
 
 .order-history-icon {
     align-items: center;
     border-radius: 12px;
     display: flex;
-    font-size: 28px;
-    height: 70px;
+    font-size: 22px;
+    height: 54px;
     justify-content: center;
-    width: 70px;
+    width: 54px;
 }
 
 .order-history-main {
@@ -1151,31 +1539,32 @@ body {
 
 .orders-dashboard .profile-order-header {
     align-items: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 .orders-dashboard .profile-order-header span:not(.profile-order-status) {
     color: #667085;
     display: block;
-    font-size: 14px;
-    margin-bottom: 4px;
+    font-size: 12px;
+    margin-bottom: 3px;
 }
 
 .orders-dashboard .profile-order-header strong {
     color: #12612f;
-    font-size: 18px;
-    margin-bottom: 6px;
+    font-size: 16px;
+    margin-bottom: 4px;
 }
 
 .orders-dashboard .profile-order-header small {
     color: #667085;
+    font-size: 12px;
 }
 
 .order-history-body {
     align-items: start;
     display: grid;
-    gap: 26px;
-    grid-template-columns: 250px minmax(0, 1fr) 190px;
+    gap: 18px;
+    grid-template-columns: 220px minmax(0, 1fr);
 }
 
 .orders-dashboard .profile-order-meta {
@@ -1185,7 +1574,7 @@ body {
     gap: 0;
     grid-template-columns: 1fr;
     margin: 0;
-    padding: 14px;
+    padding: 10px 12px;
 }
 
 .orders-dashboard .profile-order-meta div {
@@ -1193,10 +1582,10 @@ body {
     background: #fff;
     border-radius: 0;
     display: grid;
-    gap: 2px 10px;
-    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 2px 8px;
+    grid-template-columns: 28px minmax(0, 1fr);
     min-width: 0;
-    padding: 8px 0;
+    padding: 6px 0;
 }
 
 .orders-dashboard .profile-order-meta i {
@@ -1206,25 +1595,25 @@ body {
     color: #125827;
     display: flex;
     grid-row: 1 / span 2;
-    height: 28px;
+    height: 24px;
     justify-content: center;
-    width: 28px;
+    width: 24px;
 }
 
 .orders-dashboard .profile-order-meta span {
     color: #667085;
-    font-size: 12px;
+    font-size: 11px;
     margin: 0;
 }
 
 .orders-dashboard .profile-order-meta strong {
     color: #1f2a1f;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .orders-dashboard .profile-order-meta div:last-child strong {
     color: #12612f;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .orders-dashboard .profile-order-items {
@@ -1234,21 +1623,22 @@ body {
 }
 
 .orders-dashboard .profile-order-item {
-    grid-template-columns: 92px minmax(0, 1fr) auto;
-    padding: 18px 22px;
+    grid-template-columns: 72px minmax(260px, 480px) auto;
+    justify-content: start;
+    padding: 12px 16px;
 }
 
 .order-item-image-wrap {
-    height: 74px;
+    height: 58px;
     position: relative;
-    width: 74px;
+    width: 58px;
 }
 
 .order-item-image-wrap img {
     border-radius: 8px;
-    height: 74px;
+    height: 58px;
     object-fit: cover;
-    width: 74px;
+    width: 58px;
 }
 
 .order-item-image-wrap span {
@@ -1258,58 +1648,35 @@ body {
     bottom: -8px;
     color: #fff !important;
     display: flex !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-weight: 800;
-    height: 24px;
+    height: 21px;
     justify-content: center;
     position: absolute;
     right: -8px;
-    width: 24px;
+    width: 21px;
 }
 
 .orders-dashboard .profile-order-item div strong {
     color: #1f2a1f;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .orders-dashboard .profile-order-item > strong {
     color: #1f2a1f;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .orders-dashboard .profile-order-totals {
     border-top: 1px solid #e0e6dc;
     color: #667085;
-    justify-content: flex-end;
+    justify-content: flex-start;
     margin: 0;
-    padding: 14px 22px;
+    padding: 10px 16px;
 }
 
 .orders-dashboard .profile-order-totals strong {
     color: #1f2a1f;
-}
-
-.order-history-actions {
-    align-items: center;
-    border-left: 1px dashed #cfd8ce;
-    display: flex;
-    min-height: 100%;
-    justify-content: center;
-    padding-left: 26px;
-}
-
-.order-history-actions a {
-    align-items: center;
-    background: #eef7f1;
-    border-radius: 8px;
-    color: #125827;
-    display: inline-flex;
-    font-weight: 800;
-    gap: 10px;
-    justify-content: center;
-    min-height: 48px;
-    min-width: 150px;
-    text-decoration: none;
 }
 
 .profile-order-status {
@@ -1336,6 +1703,11 @@ body {
     color: #24723c;
 }
 
+.profile-order-status--canceled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
 @media (max-width: 1120px) {
     .orders-controls,
     .order-history-body {
@@ -1355,22 +1727,15 @@ body {
         display: grid;
     }
 
-    .order-history-actions {
-        border-left: none;
-        border-top: 1px dashed #cfd8ce;
-        justify-content: flex-start;
-        padding-left: 0;
-        padding-top: 18px;
-    }
 }
 
 @media (max-width: 720px) {
     .orders-page-top h1 {
-        font-size: 34px;
+        font-size: 32px;
     }
 
     .orders-dashboard {
-        padding: 18px;
+        padding: 14px;
     }
 
     .orders-tabs a {
@@ -1380,6 +1745,7 @@ body {
 
     .order-history-card {
         grid-template-columns: 1fr;
+        padding: 14px;
     }
 
     .orders-dashboard .profile-order-header {
@@ -1391,7 +1757,7 @@ body {
     }
 
     .orders-dashboard .profile-order-item {
-        grid-template-columns: 74px minmax(0, 1fr);
+        grid-template-columns: 62px minmax(0, 1fr);
     }
 
     .orders-dashboard .profile-order-item > strong {
@@ -1401,5 +1767,184 @@ body {
     .orders-dashboard .profile-order-totals {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+@media (max-width: 560px) {
+    .orders-page {
+        margin-top: 18px;
+    }
+
+    .orders-page-top h1 {
+        font-size: 28px;
+    }
+
+    .orders-page-top p {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .orders-dashboard {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .orders-page-message {
+        align-items: flex-start;
+        font-size: 12px;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+    }
+
+    .orders-controls {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .orders-tabs {
+        flex-wrap: nowrap;
+        gap: 8px;
+        margin-left: -14px;
+        margin-right: -14px;
+        overflow-x: auto;
+        padding: 0 14px 6px;
+        scrollbar-width: none;
+    }
+
+    .orders-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .orders-tabs a {
+        border-radius: 999px !important;
+        flex: 0 0 auto;
+        font-size: 12px;
+        min-height: 36px;
+        min-width: auto;
+        padding: 0 13px;
+        white-space: nowrap;
+    }
+
+    .orders-search {
+        grid-template-columns: minmax(0, 1fr) 42px;
+        min-height: 42px;
+        width: 100%;
+    }
+
+    .orders-search input {
+        font-size: 13px;
+        padding: 0 10px;
+    }
+
+    .orders-dashboard .profile-orders {
+        gap: 12px;
+    }
+
+    .order-history-card {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .order-history-icon {
+        display: none;
+    }
+
+    .orders-dashboard .profile-order-header {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .orders-dashboard .profile-order-header strong {
+        font-size: 15px;
+    }
+
+    .orders-dashboard .profile-order-header small {
+        display: block;
+        line-height: 1.4;
+    }
+
+    .profile-order-status {
+        font-size: 12px;
+        min-height: 32px;
+        padding: 0 10px;
+    }
+
+    .order-history-body {
+        gap: 10px;
+    }
+
+    .orders-dashboard .profile-order-meta {
+        gap: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 8px;
+    }
+
+    .orders-dashboard .profile-order-meta div {
+        background: #f8fbf6;
+        border-radius: 8px;
+        display: block;
+        padding: 8px;
+    }
+
+    .orders-dashboard .profile-order-meta i {
+        display: none;
+    }
+
+    .orders-dashboard .profile-order-meta span {
+        font-size: 10px;
+    }
+
+    .orders-dashboard .profile-order-meta strong,
+    .orders-dashboard .profile-order-meta div:last-child strong {
+        display: block;
+        font-size: 12px;
+        line-height: 1.25;
+        margin-top: 3px;
+        overflow-wrap: anywhere;
+    }
+
+    .orders-dashboard .profile-order-items {
+        border-radius: 8px;
+    }
+
+    .orders-dashboard .profile-order-item {
+        gap: 10px;
+        grid-template-columns: 54px minmax(0, 1fr);
+        padding: 10px;
+    }
+
+    .order-item-image-wrap,
+    .order-item-image-wrap img {
+        height: 48px;
+        width: 48px;
+    }
+
+    .orders-dashboard .profile-order-item div strong {
+        font-size: 13px;
+        line-height: 1.3;
+    }
+
+    .orders-dashboard .profile-order-item div span {
+        font-size: 12px;
+        line-height: 1.35;
+    }
+
+    .orders-dashboard .profile-order-item > strong {
+        font-size: 13px;
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .orders-dashboard .profile-order-totals {
+        gap: 4px;
+        padding: 9px 10px;
+    }
+}
+
+@media (max-width: 380px) {
+    .orders-dashboard .profile-order-meta {
+        grid-template-columns: 1fr;
     }
 }

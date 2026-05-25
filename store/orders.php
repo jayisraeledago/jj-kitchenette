@@ -1,14 +1,16 @@
 <?php
 include __DIR__ . '/../db.php';
 include __DIR__ . '/includes/admin-auth.php';
+require_once __DIR__ . '/../includes/order_email.php';
 requireAdminPermission($conn, ['orders']);
 
-$statusOptions = ['pending', 'preparing', 'shipped', 'delivered'];
+$statusOptions = ['pending', 'preparing', 'shipped', 'delivered', 'canceled'];
 $statusLabels = [
     'pending' => 'Pending',
     'preparing' => 'Preparing',
     'shipped' => 'Shipped',
-    'delivered' => 'Delivered / Picked Up'
+    'delivered' => 'Delivered / Picked Up',
+    'canceled' => 'Canceled'
 ];
 $methodLabels = [
     'delivery' => 'Delivery',
@@ -89,6 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
         ");
         $updateStmt->bind_param("si", $status, $orderId);
         $updateStmt->execute();
+
+        sendCustomerOrderDetailsEmail($conn, $orderId, 'updated');
     }
 
     $redirectQuery = $_POST['redirect_query'] ?? '';
@@ -231,7 +235,8 @@ $summaryCards = [
     ['key' => 'pending', 'label' => 'Pending', 'hint' => 'Awaiting action', 'icon' => 'fa-clock'],
     ['key' => 'preparing', 'label' => 'Preparing', 'hint' => 'Being prepared', 'icon' => 'fa-box'],
     ['key' => 'shipped', 'label' => 'Shipped', 'hint' => 'On the way', 'icon' => 'fa-truck'],
-    ['key' => 'delivered', 'label' => 'Delivered / Picked Up', 'hint' => 'Completed', 'icon' => 'fa-circle-check']
+    ['key' => 'delivered', 'label' => 'Delivered', 'hint' => 'Completed', 'icon' => 'fa-circle-check'],
+    ['key' => 'canceled', 'label' => 'Canceled', 'hint' => 'Canceled by customer', 'icon' => 'fa-ban']
 ];
 ?>
 
@@ -239,11 +244,13 @@ $summaryCards = [
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders Admin | J&J's Kitchenette</title>
     <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=<?= filemtime(__DIR__ . '/../assets/css/admin.css') ?>">
 </head>
 
 <body>
@@ -335,21 +342,20 @@ $summaryCards = [
                     <table class="orders-table">
                         <thead>
                             <tr>
-                                <th>Order <i class="fa-solid fa-sort"></i></th>
-                                <th>Customer <i class="fa-solid fa-sort"></i></th>
+                                <th>Order</th>
+                                <th>Customer</th>
                                 <th>Items</th>
-                                <th>Payment & Method <i class="fa-solid fa-sort"></i></th>
-                                <th>Total <i class="fa-solid fa-sort"></i></th>
-                                <th>Status <i class="fa-solid fa-sort"></i></th>
-                                <th>Date <i class="fa-solid fa-sort"></i></th>
-                                <th>Actions</th>
+                                <th>Payment & Method</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <?php if ($orders->num_rows === 0) { ?>
                                 <tr>
-                                    <td colspan="8" class="orders-empty">No orders found.</td>
+                                    <td colspan="7" class="orders-empty">No orders found.</td>
                                 </tr>
                             <?php } ?>
 
@@ -397,27 +403,6 @@ $summaryCards = [
                                     <td>
                                         <span><?= date('M d, Y', strtotime($order['created_at'])) ?></span>
                                         <span class="orders-muted"><?= date('h:i A', strtotime($order['created_at'])) ?></span>
-                                    </td>
-                                    <td>
-                                        <div class="order-actions">
-                                            <details class="order-update-menu">
-                                                <summary class="view-btn more-btn" aria-label="Update order status">
-                                                    <i class="fa-solid fa-ellipsis"></i>
-                                                </summary>
-                                                <form method="POST" class="order-status-form">
-                                                    <input type="hidden" name="order_id" value="<?= (int) $order['id'] ?>">
-                                                    <input type="hidden" name="redirect_query" value="<?= htmlspecialchars($redirectQuery) ?>">
-                                                    <select name="status">
-                                                        <?php foreach (orderStatusOptionsForFulfillment($order['fulfillment_method']) as $status) { ?>
-                                                            <option value="<?= htmlspecialchars($status) ?>" <?= $order['status'] === $status ? 'selected' : '' ?>>
-                                                                <?= htmlspecialchars(orderStatusLabelForFulfillment($status, $statusLabels, $order['fulfillment_method'])) ?>
-                                                            </option>
-                                                        <?php } ?>
-                                                    </select>
-                                                    <button type="submit">Save</button>
-                                                </form>
-                                            </details>
-                                        </div>
                                     </td>
                                 </tr>
                             <?php } ?>

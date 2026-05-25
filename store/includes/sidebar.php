@@ -84,7 +84,22 @@ $adminNavItems = [
 ];
 ?>
 
+<header class="admin-mobile-header">
+    <button type="button" class="admin-mobile-menu-toggle" aria-label="Open admin menu" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <a class="admin-mobile-header__brand" href="/jj_kitchenette/store/dashboard.php" aria-label="J&J's Kitchenette admin">
+        <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+    </a>
+    <span class="admin-mobile-header__spacer" aria-hidden="true"></span>
+</header>
+<div class="admin-sidebar-backdrop" data-admin-sidebar-close></div>
+
 <aside class="sidebar admin-sidebar">
+    <button type="button" class="admin-sidebar-close" aria-label="Close admin menu">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
     <a class="admin-sidebar__brand" href="/jj_kitchenette/store/dashboard.php" aria-label="J&J's Kitchenette admin">
         <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
     </a>
@@ -139,12 +154,62 @@ $adminNavItems = [
                     <i class="fa-solid fa-key"></i>
                     <span>Change Password</span>
                 </a>
+                <a href="/jj_kitchenette/store/logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </details>
-
-        <a class="admin-sidebar__link admin-sidebar__logout" href="/jj_kitchenette/store/logout.php">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-        </a>
     </div>
 </aside>
+
+<script>
+    (function () {
+        const body = document.body;
+        const sidebar = document.querySelector('.admin-sidebar');
+        const toggle = document.querySelector('.admin-mobile-menu-toggle');
+        const closeButton = document.querySelector('.admin-sidebar-close');
+        const backdrop = document.querySelector('.admin-sidebar-backdrop');
+
+        if (!body || !sidebar || !toggle) {
+            return;
+        }
+
+        function setSidebarOpen(isOpen) {
+            body.classList.toggle('admin-sidebar-open', isOpen);
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            toggle.setAttribute('aria-label', isOpen ? 'Close admin menu' : 'Open admin menu');
+            toggle.innerHTML = isOpen
+                ? '<i class="fa-solid fa-xmark"></i>'
+                : '<i class="fa-solid fa-bars"></i>';
+        }
+
+        toggle.addEventListener('click', function () {
+            setSidebarOpen(!body.classList.contains('admin-sidebar-open'));
+        });
+
+        if (backdrop) {
+            backdrop.addEventListener('click', function () {
+                setSidebarOpen(false);
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', function () {
+                setSidebarOpen(false);
+            });
+        }
+
+        sidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                setSidebarOpen(false);
+            });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                setSidebarOpen(false);
+            }
+        });
+    })();
+</script>

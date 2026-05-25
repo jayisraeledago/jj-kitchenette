@@ -29,7 +29,7 @@ if (file_exists($footerSettingsFile)) {
         </div>
 
         <!-- Links -->
-        <div class="footer-section">
+        <div class="footer-section footer-section--explore">
             <h4>Explore</h4>
             <ul>
                 <li><a href="/jj_kitchenette/"><i class="fas fa-home"></i> Home</a></li>
@@ -41,7 +41,7 @@ if (file_exists($footerSettingsFile)) {
         </div>
 
         <!-- Contact -->
-        <div class="footer-section">
+        <div class="footer-section footer-section--contact">
             <h4>Contact</h4>
             <div class="footer-contact">
                 <p><i class="fas fa-location-dot"></i> <?= htmlspecialchars($footerSettings['store_area'], ENT_QUOTES, 'UTF-8') ?></p>
@@ -57,7 +57,7 @@ if (file_exists($footerSettingsFile)) {
             <p>Stay connected and follow us on our social media platforms.</p>
 
             <div class="socials">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61582439078150" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
             </div>

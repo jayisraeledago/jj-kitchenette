@@ -64,6 +64,28 @@ function uploadVariantImage($file, $index)
     return $filename;
 }
 
+function rejectInvalidProductNumber($values, $label, $integerOnly = false)
+{
+    if (!is_array($values)) {
+        $values = [$values];
+    }
+
+    foreach ($values as $value) {
+        if ($value === '' || $value === null) {
+            continue;
+        }
+
+        if (
+            !is_numeric($value)
+            || (float) $value < 0
+            || ($integerOnly && !preg_match('/^\d+$/', trim((string) $value)))
+        ) {
+            echo "<script>alert('$label must be a non-negative" . ($integerOnly ? " whole" : "") . " number'); window.history.back();</script>";
+            exit;
+        }
+    }
+}
+
 if (isset($_POST['delete'])) {
 
     $product_id = $id;
@@ -304,6 +326,9 @@ if (isset($_POST['save'])) {
         $stocks = [$stocks];
     }
 
+    rejectInvalidProductNumber($prices, 'Price');
+    rejectInvalidProductNumber($stocks, 'Stock', true);
+
     // sanitize
     $prices = array_map('floatval', $prices);
     $stocks = array_map('intval', $stocks);
@@ -423,9 +448,13 @@ if (isset($_POST['save'])) {
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product | J&J's Kitchenette Admin</title>
+    <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=<?= filemtime(__DIR__ . '/../assets/css/admin.css') ?>">
 </head>
 
 <body>
@@ -529,7 +558,7 @@ if (isset($_POST['save'])) {
 
                                         <div class="field">
                                             <label>Price</label>
-                                            <input type="number" name="price"
+                                            <input type="number" name="price" min="0" step="0.01"
                                                 value="<?= $isDefaultOnly ? $variantRows[0]['price'] : '' ?>"
                                                 placeholder="Base Price">
                                         </div>
@@ -543,7 +572,7 @@ if (isset($_POST['save'])) {
 
                                         <div class="field">
                                             <label>Stock</label>
-                                            <input type="number" name="inventory"
+                                            <input type="number" name="inventory" min="0" step="1"
                                                 value="<?= $isDefaultOnly ? $variantRows[0]['inventory'] : '' ?>"
                                                 placeholder="Available Stock">
                                         </div>
@@ -592,8 +621,7 @@ if (isset($_POST['save'])) {
 
                                 </div>
 
-                                <!-- BUTTONS (ALWAYS BELOW FORM) -->
-                                <div style="margin-top:15px;">
+                                <div class="product-editor-inline-actions">
                                     <button type="button" id="add-variant-btn">+ Add Variant</button>
                                     <button
                                         type="button"
@@ -602,12 +630,8 @@ if (isset($_POST['save'])) {
                                     >
                                         Remove Variants
                                     </button>
-                                    <button type="button" id="generate-btn" style="display:none;">Generate
-                                        Variants</button>
+                                    <button type="button" id="generate-btn" style="display:none;">Generate Variants</button>
                                 </div>
-
-                                <!-- GENERATED VARIANTS -->
-                                <!-- GENERATED VARIANTS -->
 
                                 <div class="variant-header" style="visibility: hidden;">
                                     <span>Image</span>
@@ -619,12 +643,16 @@ if (isset($_POST['save'])) {
 
                                 <div id="variant-list" style="margin-top:15px;"></div>
 
-                                <br><br>
-                                <button type="submit" name="save">Save Product</button>
-                                <button type="button" id="openDeleteModal"
-                                    style="background:red;color:white;margin-top:10px;">
-                                    Delete Product
-                                </button>
+                                <div class="product-form-actions product-form-actions--edit">
+                                    <button type="submit" name="save">
+                                        <i class="fa-regular fa-floppy-disk"></i>
+                                        Save Product
+                                    </button>
+                                    <button type="button" id="openDeleteModal" class="product-danger-button">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                        Delete Product
+                                    </button>
+                                </div>
                             </form>
 
                             <!-- DELETE MODAL -->
@@ -692,6 +720,25 @@ if (isset($_POST['save'])) {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            function isNonNegativeNumberInput(input) {
+                return input.matches('input[type="number"][min="0"]');
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (isNonNegativeNumberInput(e.target) && e.key === '-') {
+                    e.preventDefault();
+                }
+            }, true);
+
+            document.addEventListener('input', function (e) {
+                if (!isNonNegativeNumberInput(e.target) || !e.target.value.includes('-')) {
+                    return;
+                }
+
+                e.target.value = e.target.value.replace(/-/g, '');
+                e.target.dispatchEvent(new Event('input', { bubbles: true }));
+            }, true);
 
             const previewImg = document.getElementById('preview-img');
             const titleInput = document.querySelector('[name="title"]');
@@ -915,11 +962,11 @@ if (isset($_POST['save'])) {
                                 </div>
 
                                 <div class="col">
-                                    <input type="number" name="price[]" placeholder="Price">
+                                    <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                 </div>
 
                                 <div class="col">
-                                    <input type="number" name="inventory[]" placeholder="Stock">
+                                    <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                 </div>
 
                             </div>`;
@@ -957,11 +1004,11 @@ if (isset($_POST['save'])) {
                                     </div>
 
                                     <div class="col">
-                                        <input type="number" name="price[]" placeholder="Price">
+                                        <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                     </div>
 
                                     <div class="col">
-                                        <input type="number" name="inventory[]" placeholder="Stock">
+                                        <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                     </div>
 
                                 </div>`;
@@ -1002,11 +1049,11 @@ if (isset($_POST['save'])) {
                                         </div>
 
                                         <div class="col">
-                                            <input type="number" name="price[]" placeholder="Price">
+                                            <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                         </div>
 
                                         <div class="col">
-                                            <input type="number" name="inventory[]" placeholder="Stock">
+                                            <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                         </div>
 
                                     </div>`;
@@ -1264,11 +1311,11 @@ if (isset($_POST['save'])) {
                     </div>
 
                         <div class="col">
-                            <input type="number" name="price[]" value="<?= $v['price'] ?>">
+                            <input type="number" name="price[]" min="0" step="0.01" value="<?= $v['price'] ?>">
                         </div>
 
                         <div class="col">
-                            <input type="number" name="inventory[]" value="<?= $v['inventory'] ?>">
+                            <input type="number" name="inventory[]" min="0" step="1" value="<?= $v['inventory'] ?>">
                         </div>
 
                     </div>

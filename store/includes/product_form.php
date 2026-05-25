@@ -40,7 +40,7 @@
         <div class="three-cols" id="base-price-section">
             <div class="field">
                 <label>Price</label>
-                <input type="number" name="price" placeholder="Base Price">
+                <input type="number" name="price" min="0" step="0.01" placeholder="Base Price">
             </div>
 
             <div class="field">
@@ -50,7 +50,7 @@
 
             <div class="field">
                 <label>Stock</label>
-                <input type="number" name="inventory" placeholder="Available Stock">
+                <input type="number" name="inventory" min="0" step="1" placeholder="Available Stock">
             </div>
         </div>
 

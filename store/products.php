@@ -124,11 +124,13 @@ $filterQuery = '&status=' . urlencode($statusFilter) . '&category=' . urlencode(
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products Admin | J&J's Kitchenette</title>
     <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=<?= filemtime(__DIR__ . '/../assets/css/admin.css') ?>">
 </head>
 
 <body>
@@ -158,7 +160,7 @@ $filterQuery = '&status=' . urlencode($statusFilter) . '&category=' . urlencode(
                                 type="text"
                                 name="search"
                                 id="productSearchInput"
-                                placeholder="Search products..."
+                                placeholder="Search products or SKU..."
                                 value="<?= htmlspecialchars($search) ?>">
                             <button type="submit" class="sr-only">Search</button>
                         </form>
@@ -301,7 +303,15 @@ $filterQuery = '&status=' . urlencode($statusFilter) . '&category=' . urlencode(
 
                     // SEARCH
                     if (!empty($search)) {
-                        $where[] = "p.title LIKE '%$search%'";
+                        $where[] = "(
+                            p.title LIKE '%$search%'
+                            OR EXISTS (
+                                SELECT 1
+                                FROM product_variants sv
+                                WHERE sv.product_id = p.id
+                                AND sv.sku LIKE '%$search%'
+                            )
+                        )";
                     }
 
                     if (!empty($statusFilter)) {
@@ -380,9 +390,9 @@ $filterQuery = '&status=' . urlencode($statusFilter) . '&category=' . urlencode(
                         $variantsCount = $row['variants_count'] ?? 0;
 
                         if ($variantsCount <= 1) {
-                            echo "<td>{$totalStock} in stock</td>";
+                            echo "<td>{$totalStock}<span class='stock-copy'> in stock</span></td>";
                         } else {
-                            echo "<td>{$totalStock} in stock for {$variantsCount} variants</td>";
+                            echo "<td>{$totalStock}<span class='stock-copy'> in stock</span> for {$variantsCount} variants</td>";
                         }
 
                         // CATEGORY

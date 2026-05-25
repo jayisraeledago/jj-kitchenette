@@ -370,7 +370,7 @@ include('../store/includes/header.php');
             <form action="save_address.php" method="POST">
 
                 <div class="form-group">
-                    <label>Full Name</label>
+                    <label>Recipient Name</label>
 
                     <input type="text" name="full_name" required>
                 </div>
@@ -431,7 +431,7 @@ include('../store/includes/header.php');
                 <input type="hidden" name="address_id" id="edit_address_id">
 
                 <div class="form-group">
-                    <label>Full Name</label>
+                    <label>Recipient Name</label>
 
                     <input type="text" name="full_name" id="edit_full_name" required>
                 </div>

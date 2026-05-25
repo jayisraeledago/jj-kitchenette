@@ -28,9 +28,21 @@ $types = "";
 $params = [];
 
 if ($search !== '') {
-    $conditions[] = "(p.title LIKE ? OR p.body LIKE ?)";
+    $conditions[] = "(
+        p.title LIKE ?
+        OR p.body LIKE ?
+        OR c.name LIKE ?
+        OR EXISTS (
+            SELECT 1
+            FROM product_variants sv
+            WHERE sv.product_id = p.id
+              AND sv.sku LIKE ?
+        )
+    )";
     $searchTerm = "%{$search}%";
-    $types .= "ss";
+    $types .= "ssss";
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
 }

@@ -12,6 +12,20 @@ $source = $_POST['source'] ?? $_GET['source'] ?? 'cart';
 $items = [];
 $total = 0;
 
+$userStmt = $conn->prepare("
+    SELECT first_name, last_name
+    FROM users
+    WHERE id = ?
+    LIMIT 1
+");
+$userStmt->bind_param("i", $user_id);
+$userStmt->execute();
+$checkoutUser = $userStmt->get_result()->fetch_assoc() ?: [];
+$checkoutFullName = trim(implode(' ', array_filter([
+    $checkoutUser['first_name'] ?? '',
+    $checkoutUser['last_name'] ?? ''
+])));
+
 // For direct checkout, we need to keep track of these to pass to the final order script
 $direct_product_id = $_POST['product_id'] ?? null;
 $direct_variant_id = $_POST['variant_id'] ?? null;
@@ -161,7 +175,7 @@ include('store/includes/header.php');
                 <span>Your order is secure and your information is protected.</span>
             </div>
 
-            <form action="process_order.php" method="POST">
+            <form action="process_order.php" method="POST" id="checkoutForm">
                 <input type="hidden" name="source" value="<?php echo htmlspecialchars($source); ?>">
                 <input type="hidden" name="delivery_fee" id="deliveryFeeInput" value="<?php echo number_format($deliveryFee, 2, '.', ''); ?>">
                 <input type="hidden" name="order_total" id="orderTotalInput" value="<?php echo number_format($grandTotal, 2, '.', ''); ?>">
@@ -350,6 +364,32 @@ include('store/includes/header.php');
                     </aside>
                 </div>
             </form>
+
+            <div class="checkout-confirm-modal" id="checkoutConfirmModal" aria-hidden="true">
+                <div class="checkout-confirm-modal__panel" role="dialog" aria-modal="true" aria-labelledby="checkoutConfirmTitle">
+                    <button type="button" class="checkout-confirm-modal__close" id="checkoutConfirmClose" aria-label="Close confirmation">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="checkout-confirm-modal__icon" id="checkoutConfirmIcon">
+                        <i class="fas fa-wallet"></i>
+                    </span>
+                    <h2 id="checkoutConfirmTitle">Confirm order method</h2>
+                    <p id="checkoutConfirmMessage">
+                        Please confirm your order method before placing your order.
+                    </p>
+                    <div class="checkout-confirm-modal__details">
+                        <span>Selected method</span>
+                        <strong id="checkoutConfirmMethod">Cash on Delivery</strong>
+                    </div>
+                    <div class="checkout-confirm-modal__actions">
+                        <button type="button" id="checkoutConfirmCancel">Review order</button>
+                        <button type="button" id="checkoutConfirmSubmit">
+                            <i class="fas fa-check"></i>
+                            Place order
+                        </button>
+                    </div>
+                </div>
+            </div>
         <?php } ?>
     </div>
 </main>
@@ -366,6 +406,10 @@ include('store/includes/header.php');
 
     function getSelectedPaymentMethod() {
         return document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+    }
+
+    function getPaymentMethodLabel(method) {
+        return method === 'store_pickup' ? 'Store Pick Up' : 'Cash on Delivery';
     }
 
     function getSelectedAddressRadio() {
@@ -498,6 +542,104 @@ include('store/includes/header.php');
         }
     });
 
+    const checkoutForm = document.getElementById('checkoutForm');
+    const checkoutConfirmModal = document.getElementById('checkoutConfirmModal');
+    const checkoutConfirmTitle = document.getElementById('checkoutConfirmTitle');
+    const checkoutConfirmMessage = document.getElementById('checkoutConfirmMessage');
+    const checkoutConfirmMethod = document.getElementById('checkoutConfirmMethod');
+    const checkoutConfirmIcon = document.getElementById('checkoutConfirmIcon');
+    const checkoutConfirmSubmit = document.getElementById('checkoutConfirmSubmit');
+    const checkoutConfirmCancel = document.getElementById('checkoutConfirmCancel');
+    const checkoutConfirmClose = document.getElementById('checkoutConfirmClose');
+    let checkoutConfirmApproved = false;
+
+    function openCheckoutConfirmModal() {
+        const method = getSelectedPaymentMethod();
+        const methodLabel = getPaymentMethodLabel(method);
+
+        if (checkoutConfirmMethod) {
+            checkoutConfirmMethod.innerText = methodLabel;
+        }
+
+        if (checkoutConfirmIcon) {
+            checkoutConfirmIcon.innerHTML = method === 'store_pickup'
+                ? '<i class="fas fa-store"></i>'
+                : '<i class="fas fa-truck"></i>';
+        }
+
+        if (checkoutConfirmTitle) {
+            checkoutConfirmTitle.innerText = method === 'store_pickup'
+                ? 'Confirm store pickup'
+                : 'Confirm cash on delivery';
+        }
+
+        if (checkoutConfirmMessage) {
+            checkoutConfirmMessage.innerText = method === 'store_pickup'
+                ? "You selected Store Pick Up. Your order will not be delivered, and you will pick it up from J&J's Kitchenette when it is ready."
+                : 'You selected Cash on Delivery. Your order will be prepared for delivery, and payment will be collected when it arrives.';
+        }
+
+        checkoutConfirmModal?.classList.add('is-open');
+        checkoutConfirmModal?.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCheckoutConfirmModal() {
+        checkoutConfirmModal?.classList.remove('is-open');
+        checkoutConfirmModal?.setAttribute('aria-hidden', 'true');
+    }
+
+    function handleCheckoutOrderAttempt(event) {
+        if (checkoutConfirmApproved) {
+            return;
+        }
+
+        event.preventDefault();
+        updateCheckoutSummary();
+
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+        if (placeOrderBtn?.disabled) {
+            return;
+        }
+
+        if (checkoutForm && typeof checkoutForm.reportValidity === 'function' && !checkoutForm.reportValidity()) {
+            return;
+        }
+
+        openCheckoutConfirmModal();
+    }
+
+    checkoutForm?.addEventListener('submit', handleCheckoutOrderAttempt);
+    document.getElementById('placeOrderBtn')?.addEventListener('click', handleCheckoutOrderAttempt);
+
+    checkoutConfirmSubmit?.addEventListener('click', function () {
+        if (!checkoutForm) {
+            return;
+        }
+
+        checkoutConfirmApproved = true;
+        closeCheckoutConfirmModal();
+        if (typeof checkoutForm.requestSubmit === 'function') {
+            checkoutForm.requestSubmit();
+            return;
+        }
+
+        checkoutForm.submit();
+    });
+
+    checkoutConfirmCancel?.addEventListener('click', closeCheckoutConfirmModal);
+    checkoutConfirmClose?.addEventListener('click', closeCheckoutConfirmModal);
+    checkoutConfirmModal?.addEventListener('click', function (event) {
+        if (event.target === checkoutConfirmModal) {
+            closeCheckoutConfirmModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && checkoutConfirmModal?.classList.contains('is-open')) {
+            closeCheckoutConfirmModal();
+        }
+    });
+
     updateCheckoutSummary();
 </script>
 
@@ -516,9 +658,9 @@ include('store/includes/header.php');
         <form id="addressForm">
 
             <div class="form-group">
-                <label>Full Name</label>
+                <label>Recipient Name</label>
 
-                <input type="text" name="full_name" required>
+                <input type="text" name="full_name" value="<?php echo htmlspecialchars($checkoutFullName); ?>" required>
             </div>
 
             <div class="form-group">
@@ -556,7 +698,14 @@ include('store/includes/header.php');
 </div>
 
 <script>
+    const checkoutDefaultFullName = <?php echo json_encode($checkoutFullName); ?>;
+
     function openAddressModal() {
+        const nameInput = document.querySelector('#addressForm [name="full_name"]');
+        if (nameInput && nameInput.value.trim() === '') {
+            nameInput.value = checkoutDefaultFullName;
+        }
+
         document.getElementById('addressModal').style.display = 'flex';
     }
 
@@ -649,6 +798,10 @@ include('store/includes/header.php');
             updateCheckoutSummary();
 
             form.reset();
+            const nameInput = form.querySelector('[name="full_name"]');
+            if (nameInput) {
+                nameInput.value = checkoutDefaultFullName;
+            }
             closeAddressModal();
         } else {
             alert(data.message || 'Failed to save address');

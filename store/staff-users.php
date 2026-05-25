@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/password_reset.php';
 include __DIR__ . '/includes/admin-auth.php';
 requireAdminOnly();
 
@@ -72,7 +73,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $errorMessage = 'You cannot change your own staff account here.';
         } else {
             $targetStmt = $conn->prepare("
-                SELECT u.id
+                SELECT u.id, u.first_name, u.last_name, u.email, r.role_name
                 FROM users u
                 INNER JOIN roles r ON r.id = u.role_id
                 WHERE u.id = ?
@@ -110,20 +111,28 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $staffFirstName = trim($_POST['staff_first_name'] ?? '');
     $staffLastName = trim($_POST['staff_last_name'] ?? '');
     $staffEmail = trim($_POST['staff_email'] ?? '');
-    $staffPassword = $_POST['staff_password'] ?? '';
     $roleType = ($_POST['role_type'] ?? 'staff') === 'admin' ? 'admin' : 'staff';
     $allPermissionsSelected =
         isset($_POST['can_manage_inventory'])
         && isset($_POST['can_manage_products'])
         && isset($_POST['can_manage_categories'])
         && isset($_POST['can_manage_orders']);
+    $hasPermissionSelected =
+        isset($_POST['can_manage_inventory'])
+        || isset($_POST['can_manage_products'])
+        || isset($_POST['can_manage_categories'])
+        || isset($_POST['can_manage_orders']);
     if ($allPermissionsSelected) {
         $roleType = 'admin';
     }
     $selectedRoleId = $roleType === 'admin' ? $adminRoleId : $staffRoleId;
 
-    if ($staffFirstName === '' || $staffLastName === '' || $staffEmail === '' || $staffPassword === '') {
-        $errorMessage = 'Please complete the staff first name, last name, email, and password.';
+    if ($staffFirstName === '' || $staffLastName === '' || $staffEmail === '') {
+        $errorMessage = 'Please complete the staff first name, last name, and email.';
+    } elseif (!filter_var($staffEmail, FILTER_VALIDATE_EMAIL)) {
+        $errorMessage = 'Please enter a valid staff email address.';
+    } elseif (!$hasPermissionSelected) {
+        $errorMessage = 'Please select a role preset or at least one access permission before sending an invitation.';
     } else {
         $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
         $checkStmt->bind_param("s", $staffEmail);
@@ -132,7 +141,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         if ($checkStmt->get_result()->num_rows > 0) {
             $errorMessage = 'A user with that email already exists.';
         } else {
-            $hashedPassword = password_hash($staffPassword, PASSWORD_DEFAULT);
+            $temporaryPassword = bin2hex(random_bytes(24));
+            $hashedPassword = password_hash($temporaryPassword, PASSWORD_DEFAULT);
             $status = 'active';
 
             $insertStaffStmt = $conn->prepare("
@@ -160,7 +170,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $permissionStmt->bind_param("iiiii", $staffUserId, $canInventory, $canProducts, $canCategories, $canOrders);
             $permissionStmt->execute();
 
-            $savedMessage = 'Staff user created successfully.';
+            $newStaffUser = [
+                'id' => $staffUserId,
+                'first_name' => $staffFirstName,
+                'last_name' => $staffLastName,
+                'email' => $staffEmail
+            ];
+
+            if (sendStaffInvitationCode($conn, $newStaffUser, $roleType)) {
+                $savedMessage = 'Staff invitation sent successfully.';
+            } else {
+                $errorMessage = 'Staff account was created, but the invitation email could not be sent. Please check your mail settings.';
+            }
         }
     }
     }
@@ -193,11 +214,13 @@ $staffUsers = $staffStmt->get_result();
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Users | J&J's Kitchenette Admin</title>
     <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=<?= filemtime(__DIR__ . '/../assets/css/admin.css') ?>">
 </head>
 
 <body class="staff-users-page">
@@ -233,35 +256,13 @@ $staffUsers = $staffStmt->get_result();
                 <?php endif; ?>
 
                 <section class="staff-admin-card staff-admin-card--create">
-                    <div class="staff-create-top">
-                        <div class="settings-card__header">
+                    <div class="staff-invite-header">
+                        <span class="staff-invite-header__icon">
                             <i class="fa-solid fa-user-shield"></i>
-                            <div>
-                                <h2>Add Staff User</h2>
-                                <p>Create a new staff account and set the areas they can access.</p>
-                            </div>
-                        </div>
-
-                        <div class="staff-role-presets" aria-label="Quick role presets">
-                            <span>Quick role presets</span>
-                            <div>
-                                <button type="button" data-preset="inventory">
-                                    <i class="fa-solid fa-box-open"></i>
-                                    Inventory Staff
-                                </button>
-                                <button type="button" data-preset="products">
-                                    <i class="fa-solid fa-bag-shopping"></i>
-                                    Product Manager
-                                </button>
-                                <button type="button" data-preset="orders">
-                                    <i class="fa-solid fa-user"></i>
-                                    Order Manager
-                                </button>
-                                <button type="button" data-preset="all">
-                                    <i class="fa-solid fa-user-tie"></i>
-                                    Full Admin
-                                </button>
-                            </div>
+                        </span>
+                        <div>
+                            <h2>Invite User</h2>
+                            <p>Send setup email and choose access permissions.</p>
                         </div>
                     </div>
 
@@ -293,16 +294,28 @@ $staffUsers = $staffStmt->get_result();
                                 </span>
                             </label>
 
-                            <label>
-                                <span>Password</span>
-                                <span class="staff-input">
-                                    <i class="fa-solid fa-lock"></i>
-                                    <input type="password" name="staff_password" id="staffPassword" placeholder="Create a password" required>
-                                    <button type="button" class="staff-password-toggle" aria-label="Show password">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </button>
-                                </span>
-                            </label>
+                        </div>
+
+                        <div class="staff-role-presets" aria-label="Quick role presets">
+                            <span>Quick role presets</span>
+                            <div>
+                                <button type="button" data-preset="inventory">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    Inventory Staff
+                                </button>
+                                <button type="button" data-preset="products">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    Product Manager
+                                </button>
+                                <button type="button" data-preset="orders">
+                                    <i class="fa-solid fa-user"></i>
+                                    Order Manager
+                                </button>
+                                <button type="button" data-preset="all">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    Full Admin
+                                </button>
+                            </div>
                         </div>
 
                         <div class="staff-permission-heading">
@@ -363,9 +376,9 @@ $staffUsers = $staffStmt->get_result();
                         </div>
 
                         <div class="settings-actions">
-                            <button type="submit">
-                                <i class="fa-solid fa-user-plus"></i>
-                                Add Staff User
+                            <button type="submit" id="sendInvitationBtn" disabled>
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Send Invitation
                             </button>
                         </div>
                     </form>
@@ -373,8 +386,10 @@ $staffUsers = $staffStmt->get_result();
 
                 <section class="staff-admin-card staff-admin-card--list">
                     <div class="staff-list-header">
-                        <div class="settings-card__header">
-                            <i class="fa-solid fa-user-shield"></i>
+                        <div class="staff-invite-header staff-list-title">
+                            <span class="staff-invite-header__icon">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </span>
                             <div>
                                 <h2>Existing Staff</h2>
                                 <p>View and manage existing staff accounts.</p>
@@ -499,6 +514,17 @@ $staffUsers = $staffStmt->get_result();
         </div>
     </div>
     <script>
+        const sendInvitationBtn = document.getElementById('sendInvitationBtn');
+
+        function updateInvitationButtonState() {
+            const hasPermission = Array.from(document.querySelectorAll('[data-permission]'))
+                .some(input => input.checked);
+
+            if (sendInvitationBtn) {
+                sendInvitationBtn.disabled = !hasPermission;
+            }
+        }
+
         document.querySelectorAll('[data-preset]').forEach(button => {
             button.addEventListener('click', () => {
                 const preset = button.dataset.preset;
@@ -515,6 +541,8 @@ $staffUsers = $staffStmt->get_result();
                         input.dataset.permission === preset ||
                         (preset === 'products' && input.dataset.permission === 'categories');
                 });
+
+                updateInvitationButtonState();
             });
         });
 
@@ -527,15 +555,15 @@ $staffUsers = $staffStmt->get_result();
             if (roleType) {
                 roleType.value = shouldCheck ? 'admin' : 'staff';
             }
+
+            updateInvitationButtonState();
         });
 
-        document.querySelector('.staff-password-toggle')?.addEventListener('click', function () {
-            const input = document.getElementById('staffPassword');
-            const icon = this.querySelector('i');
-            input.type = input.type === 'password' ? 'text' : 'password';
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
+        document.querySelectorAll('[data-permission]').forEach(input => {
+            input.addEventListener('change', updateInvitationButtonState);
         });
+
+        updateInvitationButtonState();
 
         document.getElementById('staffSearch')?.addEventListener('input', function () {
             const term = this.value.trim().toLowerCase();

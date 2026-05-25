@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db.php';
+require_once __DIR__ . '/includes/order_email.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -104,9 +105,13 @@ function createOrderTables($conn)
             option1_value VARCHAR(100) NULL,
             option2_value VARCHAR(100) NULL,
             option3_value VARCHAR(100) NULL,
+            sku VARCHAR(100) NULL,
             price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
             quantity INT NOT NULL DEFAULT 1,
             subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            item_status VARCHAR(30) NOT NULL DEFAULT 'active',
+            canceled_at DATETIME NULL,
+            cancel_reason VARCHAR(255) NULL,
             image_path VARCHAR(255) NULL,
             INDEX (order_id),
             INDEX (product_id),
@@ -130,6 +135,7 @@ function fetchCheckoutItems($conn, $userId, $source)
                 product_variants.option1_value,
                 product_variants.option2_value,
                 product_variants.option3_value,
+                product_variants.sku,
                 product_variants.price,
                 product_variants.inventory,
                 (
@@ -167,6 +173,7 @@ function fetchCheckoutItems($conn, $userId, $source)
             product_variants.option1_value,
             product_variants.option2_value,
             product_variants.option3_value,
+            product_variants.sku,
             product_variants.price,
             product_variants.inventory,
             (
@@ -243,7 +250,7 @@ $orderNumber = generateOrderNumber($conn);
 $fulfillmentMethod = $paymentMethod === 'store_pickup' ? 'store_pickup' : 'delivery';
 
 $userStmt = $conn->prepare("
-    SELECT first_name, last_name
+    SELECT first_name, last_name, email
     FROM users
     WHERE id = ?
     LIMIT 1
@@ -320,12 +327,13 @@ try {
             option1_value,
             option2_value,
             option3_value,
+            sku,
             price,
             quantity,
             subtotal,
             image_path
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $inventoryStmt = $conn->prepare("
@@ -336,7 +344,7 @@ try {
 
     foreach ($items as $item) {
         $itemStmt->bind_param(
-            "iiissssdids",
+            "iiisssssdiis",
             $orderId,
             $item['product_id'],
             $item['variant_id'],
@@ -344,6 +352,7 @@ try {
             $item['option1_value'],
             $item['option2_value'],
             $item['option3_value'],
+            $item['sku'],
             $item['price'],
             $item['quantity'],
             $item['subtotal'],
@@ -362,6 +371,8 @@ try {
     }
 
     $conn->commit();
+
+    sendCustomerOrderDetailsEmail($conn, $orderId, 'created');
 
     header("Location: order_success.php?id=" . $orderId);
     exit;

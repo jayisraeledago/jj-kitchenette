@@ -33,6 +33,28 @@ function uploadVariantImage($file, $index)
     return $filename;
 }
 
+function rejectInvalidProductNumber($values, $label, $integerOnly = false)
+{
+    if (!is_array($values)) {
+        $values = [$values];
+    }
+
+    foreach ($values as $value) {
+        if ($value === '' || $value === null) {
+            continue;
+        }
+
+        if (
+            !is_numeric($value)
+            || (float) $value < 0
+            || ($integerOnly && !preg_match('/^\d+$/', trim((string) $value)))
+        ) {
+            echo "<script>alert('$label must be a non-negative" . ($integerOnly ? " whole" : "") . " number'); window.history.back();</script>";
+            exit;
+        }
+    }
+}
+
 if (isset($_POST['save'])) {
 
     // BASIC INFO
@@ -110,6 +132,9 @@ if (isset($_POST['save'])) {
     if (!is_array($stocks)) {
         $stocks = [$stocks];
     }
+
+    rejectInvalidProductNumber($prices, 'Price');
+    rejectInvalidProductNumber($stocks, 'Stock', true);
 
     $prices = array_map('floatval', $prices);
     $stocks = array_map('intval', $stocks);
@@ -223,9 +248,13 @@ if (isset($_POST['save'])) {
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product | J&J's Kitchenette Admin</title>
+    <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=<?= filemtime(__DIR__ . '/../assets/css/admin.css') ?>">
 </head>
 
 <body>
@@ -278,6 +307,25 @@ if (isset($_POST['save'])) {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            function isNonNegativeNumberInput(input) {
+                return input.matches('input[type="number"][min="0"]');
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (isNonNegativeNumberInput(e.target) && e.key === '-') {
+                    e.preventDefault();
+                }
+            }, true);
+
+            document.addEventListener('input', function (e) {
+                if (!isNonNegativeNumberInput(e.target) || !e.target.value.includes('-')) {
+                    return;
+                }
+
+                e.target.value = e.target.value.replace(/-/g, '');
+                e.target.dispatchEvent(new Event('input', { bubbles: true }));
+            }, true);
 
             function updatePreviewPrice() {
 
@@ -449,11 +497,11 @@ if (isset($_POST['save'])) {
                                 </div>
 
                                 <div class="col">
-                                    <input type="number" name="price[]" placeholder="Price">
+                                    <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                 </div>
 
                                 <div class="col">
-                                    <input type="number" name="inventory[]" placeholder="Stock">
+                                    <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                 </div>
 
                             </div>`;
@@ -489,11 +537,11 @@ if (isset($_POST['save'])) {
                                     </div>
 
                                     <div class="col">
-                                        <input type="number" name="price[]" placeholder="Price">
+                                        <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                     </div>
 
                                     <div class="col">
-                                        <input type="number" name="inventory[]" placeholder="Stock">
+                                        <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                     </div>
 
                                 </div>`;
@@ -532,11 +580,11 @@ if (isset($_POST['save'])) {
                                         </div>
 
                                         <div class="col">
-                                            <input type="number" name="price[]" placeholder="Price">
+                                            <input type="number" name="price[]" min="0" step="0.01" placeholder="Price">
                                         </div>
 
                                         <div class="col">
-                                            <input type="number" name="inventory[]" placeholder="Stock">
+                                            <input type="number" name="inventory[]" min="0" step="1" placeholder="Stock">
                                         </div>
 
                                     </div>`;

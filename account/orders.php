@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../db.php';
+require_once __DIR__ . '/../includes/order_cancel.php';
 
 // CHECK LOGIN
 if (!isset($_SESSION['user_id'])) {
@@ -11,10 +12,29 @@ if (!isset($_SESSION['user_id'])) {
 $userId = (int) $_SESSION['user_id'];
 $statusFilter = $_GET['status'] ?? '';
 $search = trim($_GET['search'] ?? '');
-$statusOptions = ['delivered', 'shipped', 'preparing', 'pending'];
+$statusOptions = ['delivered', 'shipped', 'preparing', 'pending', 'canceled'];
+$message = $_GET['message'] ?? '';
+$messageType = $_GET['message_type'] ?? '';
 
 if (!in_array($statusFilter, $statusOptions, true)) {
     $statusFilter = '';
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['form_action'] ?? '') === 'cancel_order') {
+    $cancelOrderId = (int) ($_POST['order_id'] ?? 0);
+    $result = cancelCustomerOrder($conn, $cancelOrderId, $userId);
+    $redirect = '/jj_kitchenette/account/orders.php?message=' . urlencode($result['message']) . '&message_type=' . ($result['success'] ? 'success' : 'error');
+
+    if ($statusFilter !== '') {
+        $redirect .= '&status=' . urlencode($statusFilter);
+    }
+
+    if ($search !== '') {
+        $redirect .= '&search=' . urlencode($search);
+    }
+
+    header("Location: " . $redirect);
+    exit;
 }
 
 // GET USER
@@ -81,7 +101,8 @@ function profileOrderStatusLabel($status)
         'pending' => 'Pending',
         'preparing' => 'Preparing',
         'shipped' => 'Shipped',
-        'delivered' => 'Delivered / Picked Up'
+        'delivered' => 'Delivered / Picked Up',
+        'canceled' => 'Canceled'
     ];
 
     return $labels[$status] ?? ucfirst($status);
@@ -103,7 +124,8 @@ function profileOrderStatusIcon($status)
         'pending' => 'fa-clock',
         'preparing' => 'fa-kitchen-set',
         'shipped' => 'fa-truck',
-        'delivered' => 'fa-bag-shopping'
+        'delivered' => 'fa-bag-shopping',
+        'canceled' => 'fa-ban'
     ];
 
     return $icons[$status] ?? 'fa-bag-shopping';
@@ -128,6 +150,13 @@ include('../store/includes/header.php');
         </div>
 
         <div class="orders-dashboard">
+            <?php if ($message !== ''): ?>
+                <div class="orders-page-message <?= $messageType === 'success' ? 'orders-page-message--success' : 'orders-page-message--error' ?>">
+                    <i class="fas <?= $messageType === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation' ?>"></i>
+                    <?= htmlspecialchars($message) ?>
+                </div>
+            <?php endif; ?>
+
             <div class="orders-controls">
                 <nav class="orders-tabs" aria-label="Order status filters">
                     <a href="/jj_kitchenette/account/orders.php<?php echo $search !== '' ? '?search=' . urlencode($search) : ''; ?>" class="<?php echo $statusFilter === '' ? 'active' : ''; ?>">
@@ -169,10 +198,13 @@ include('../store/includes/header.php');
                     <?php while ($order = $orders->fetch_assoc()): ?>
                         <?php
                         $itemsStmt = $conn->prepare("
-                            SELECT *
-                            FROM order_items
-                            WHERE order_id = ?
-                            ORDER BY id ASC
+                            SELECT
+                                oi.*,
+                                COALESCE(NULLIF(oi.sku, ''), pv.sku, '-') AS display_sku
+                            FROM order_items oi
+                            LEFT JOIN product_variants pv ON pv.id = oi.variant_id
+                            WHERE oi.order_id = ?
+                            ORDER BY oi.id ASC
                         ");
                         $itemsStmt->bind_param("i", $order['id']);
                         $itemsStmt->execute();
@@ -183,7 +215,11 @@ include('../store/includes/header.php');
                         }
                         ?>
 
-                        <article class="profile-order order-history-card">
+                        <article
+                            class="profile-order order-history-card"
+                            role="link"
+                            tabindex="0"
+                            data-order-url="/jj_kitchenette/order_success.php?id=<?= (int) $order['id'] ?>">
                             <div class="order-history-icon profile-order-status--<?= htmlspecialchars($order['status']) ?>">
                                 <i class="fas <?= htmlspecialchars(profileOrderStatusIcon($order['status'])) ?>"></i>
                             </div>
@@ -226,6 +262,7 @@ include('../store/includes/header.php');
                                     <div class="profile-order-items">
                                         <?php foreach ($items as $item): ?>
                                             <?php
+                                            $isCanceledItem = ($item['item_status'] ?? 'active') === 'canceled';
                                             $options = array_filter([
                                                 $item['option1_value'],
                                                 $item['option2_value'],
@@ -236,21 +273,32 @@ include('../store/includes/header.php');
                                             $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
                                             ?>
 
-                                            <div class="profile-order-item">
+                                            <div class="profile-order-item <?= $isCanceledItem ? 'profile-order-item--canceled' : '' ?>">
                                                 <div class="order-item-image-wrap">
                                                     <img src="/jj_kitchenette/<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($item['product_title']) ?>">
                                                     <span><?= (int) $item['quantity'] ?></span>
                                                 </div>
 
                                                 <div>
-                                                    <strong><?= htmlspecialchars($item['product_title']) ?></strong>
+                                                    <strong>
+                                                        <?= htmlspecialchars($item['product_title']) ?>
+                                                        <?php if ($isCanceledItem): ?>
+                                                            <em class="profile-order-item__badge">Canceled</em>
+                                                        <?php endif; ?>
+                                                    </strong>
                                                     <?php if (!empty($options)): ?>
                                                         <span><?= htmlspecialchars(implode(' / ', $options)) ?></span>
                                                     <?php endif; ?>
+                                                    <span>SKU: <?= htmlspecialchars($item['display_sku'] ?? '-') ?></span>
                                                     <span>Qty: <?= (int) $item['quantity'] ?></span>
+                                                    <?php if ($isCanceledItem && !empty($item['cancel_reason'])): ?>
+                                                        <span>Reason: <?= htmlspecialchars($item['cancel_reason']) ?></span>
+                                                    <?php endif; ?>
                                                 </div>
 
-                                                <strong>&#8369;<?= number_format((float) $item['subtotal'], 2) ?></strong>
+                                                <strong>
+                                                    <?= $isCanceledItem ? 'Removed' : '&#8369;' . number_format((float) $item['subtotal'], 2) ?>
+                                                </strong>
                                             </div>
 
                                         <?php endforeach; ?>
@@ -259,13 +307,6 @@ include('../store/includes/header.php');
                                             <span>Subtotal: <strong>&#8369;<?= number_format((float) $order['subtotal'], 2) ?></strong></span>
                                             <span>Delivery Fee: <strong><?= (float) $order['delivery_fee'] > 0 ? '&#8369;' . number_format((float) $order['delivery_fee'], 2) : 'Free' ?></strong></span>
                                         </div>
-                                    </div>
-
-                                    <div class="order-history-actions">
-                                        <a href="/jj_kitchenette/order_success.php?id=<?= (int) $order['id'] ?>">
-                                            <i class="fas fa-eye"></i>
-                                            View Details
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -287,6 +328,21 @@ include('../store/includes/header.php');
         </div>
 
     </div>
+
+    <script>
+        document.querySelectorAll('.order-history-card[data-order-url]').forEach(card => {
+            card.addEventListener('click', () => {
+                window.location.href = card.dataset.orderUrl;
+            });
+
+            card.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    window.location.href = card.dataset.orderUrl;
+                }
+            });
+        });
+    </script>
 
 </body>
 

@@ -12,7 +12,7 @@
     background: linear-gradient(135deg, #125827 0%, #1f6f35 58%, #86a846 100%);
     border-bottom: 1px solid #0d461f;
     color: #fff;
-    padding: 72px 0;
+    padding: 44px 0;
 }
 
 .location-hero {
@@ -28,7 +28,7 @@
     font-size: 13px;
     font-weight: 800;
     letter-spacing: 0;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-transform: uppercase;
 }
 
@@ -42,7 +42,7 @@
 .info-hero h1 {
     color: #fff;
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 44px;
+    font-size: 36px;
     max-width: 820px;
 }
 
@@ -50,7 +50,8 @@
 .contact-panel p,
 .location-details p {
     color: inherit;
-    font-size: 17px;
+    font-size: 15px;
+    line-height: 1.55;
     max-width: 680px;
 }
 
@@ -61,8 +62,8 @@
 .info-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    padding: 42px 0 24px;
+    gap: 14px;
+    padding: 24px 0 14px;
 }
 
 .info-card,
@@ -77,9 +78,9 @@
 
 .info-card {
     display: flex;
-    gap: 16px;
-    min-height: 168px;
-    padding: 24px;
+    gap: 12px;
+    min-height: 128px;
+    padding: 16px;
 }
 
 .info-card i {
@@ -88,19 +89,21 @@
     border-radius: 8px;
     color: #125827;
     display: inline-flex;
-    flex: 0 0 44px;
-    height: 44px;
+    flex: 0 0 38px;
+    height: 38px;
     justify-content: center;
+    width: 38px;
 }
 
 .info-card h2 {
-    font-size: 20px;
-    margin-bottom: 8px;
+    font-size: 18px;
+    margin-bottom: 5px;
 }
 
 .info-card p {
     color: #626b60;
-    margin-bottom: 18px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .info-card a,
@@ -109,10 +112,11 @@
     align-items: center;
     border-radius: 8px;
     display: inline-flex;
+    font-size: 14px;
     font-weight: 800;
     gap: 8px;
-    min-height: 42px;
-    padding: 0 16px;
+    min-height: 38px;
+    padding: 0 14px;
     text-decoration: none;
 }
 
@@ -124,9 +128,11 @@
 .contact-panel {
     display: grid;
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    gap: 28px;
-    margin-top: 20px;
-    padding: 32px;
+    align-items: start;
+    gap: 26px;
+    margin-top: 12px;
+    margin-bottom: 28px;
+    padding: 24px;
 }
 
 .contact-panel .info-eyebrow,
@@ -138,7 +144,7 @@
 .location-details h2 {
     color: #103f20;
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 32px;
+    font-size: 28px;
 }
 
 .contact-panel p,
@@ -148,15 +154,37 @@
 
 .contact-form {
     display: grid;
-    gap: 16px;
+    gap: 12px;
+}
+
+.contact-alert {
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 10px;
+    padding: 10px 12px;
+}
+
+.contact-alert--success {
+    background: #e9f8ee;
+    border: 1px solid #bfe8cb;
+    color: #166534;
+}
+
+.contact-alert--error {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #be123c;
 }
 
 .contact-form label {
     color: #4c5449;
     display: grid;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    gap: 8px;
+    gap: 6px;
 }
 
 .contact-form input,
@@ -164,11 +192,13 @@
     border: 1px solid #dfe4d8;
     border-radius: 8px;
     font: inherit;
-    padding: 13px 14px;
+    min-height: 42px;
+    padding: 10px 12px;
     width: 100%;
 }
 
 .contact-form textarea {
+    min-height: 126px;
     resize: vertical;
 }
 
@@ -224,11 +254,11 @@
 
 @media (max-width: 860px) {
     .info-hero {
-        padding: 54px 0;
+        padding: 36px 0;
     }
 
     .info-hero h1 {
-        font-size: 34px;
+        font-size: 30px;
     }
 
     .info-grid,
@@ -238,11 +268,170 @@
     }
 
     .info-grid {
-        padding-top: 28px;
+        padding-top: 20px;
     }
 
     .contact-panel,
     .location-details {
         padding: 24px;
+    }
+
+    .contact-panel {
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+}
+
+@media (max-width: 560px) {
+    .info-container {
+        width: min(92%, calc(100% - 28px));
+    }
+
+    .info-hero {
+        padding: 28px 0 24px;
+    }
+
+    .info-eyebrow {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .info-hero h1 {
+        font-size: 27px;
+        line-height: 1.12;
+        margin-bottom: 10px;
+    }
+
+    .info-hero p,
+    .contact-panel p,
+    .location-details p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .info-grid {
+        gap: 10px;
+        padding: 14px 0 10px;
+    }
+
+    .info-card {
+        align-items: center;
+        box-shadow: none;
+        min-height: auto;
+        padding: 13px;
+    }
+
+    .info-card i {
+        flex-basis: 36px;
+        height: 36px;
+        width: 36px;
+    }
+
+    .info-card h2 {
+        font-size: 16px;
+    }
+
+    .info-card p {
+        font-size: 13px;
+        margin-bottom: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .info-card a {
+        min-height: 34px;
+        padding: 0 12px;
+    }
+
+    .contact-panel {
+        box-shadow: none;
+        gap: 14px;
+        margin-top: 8px;
+        padding: 16px;
+    }
+
+    .contact-panel h2,
+    .location-details h2 {
+        font-size: 25px;
+        margin-bottom: 10px;
+    }
+
+    .contact-form {
+        gap: 10px;
+    }
+
+    .contact-alert {
+        align-items: flex-start;
+        font-size: 12px;
+        line-height: 1.4;
+        padding: 9px 10px;
+    }
+
+    .contact-form label {
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        border-radius: 8px;
+        font-size: 14px;
+        min-height: 42px;
+        padding: 9px 11px;
+    }
+
+    .contact-form textarea {
+        min-height: 116px;
+    }
+
+    .contact-form button {
+        min-height: 44px;
+        width: 100%;
+    }
+
+    .location-layout {
+        gap: 12px;
+        padding: 16px 0 10px;
+    }
+
+    .location-details {
+        box-shadow: none;
+        padding: 16px;
+    }
+
+    .location-actions {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .location-actions a {
+        justify-content: center;
+        min-height: 44px;
+        width: 100%;
+    }
+
+    .map-panel {
+        box-shadow: none;
+        min-height: 300px;
+    }
+
+    .map-panel iframe {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 380px) {
+    .info-hero h1 {
+        font-size: 24px;
+    }
+
+    .contact-panel h2,
+    .location-details h2 {
+        font-size: 23px;
+    }
+
+    .map-panel,
+    .map-panel iframe {
+        min-height: 260px;
     }
 }

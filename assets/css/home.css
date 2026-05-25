@@ -357,36 +357,42 @@
 
 @media (max-width: 700px) {
     .home-container {
-        width: min(92%, calc(100% - 32px));
+        width: min(92%, calc(100% - 28px));
     }
 
     .home-hero {
-        min-height: 58vh;
-        background-position: center;
+        min-height: auto;
+        background-position: center top;
     }
 
     .home-hero__content {
-        padding: 48px 0 54px;
+        padding: 52px 0 38px;
     }
 
     .home-hero h1 {
-        font-size: clamp(34px, 11vw, 46px);
-        line-height: 1.06;
-        margin-bottom: 14px;
+        font-size: clamp(32px, 10vw, 42px);
+        line-height: 1.08;
+        margin-bottom: 12px;
+        max-width: 10ch;
     }
 
     .home-hero p:not(.home-eyebrow) {
-        font-size: 16px;
-        line-height: 1.55;
+        font-size: 15px;
+        line-height: 1.5;
         margin: 0;
+        max-width: 32ch;
     }
 
     .home-actions {
         gap: 10px;
-        margin-top: 24px;
+        margin-top: 22px;
+        max-width: 100%;
     }
 
-    .home-strip__grid,
+    .home-strip {
+        display: none;
+    }
+
     .home-category-grid {
         grid-template-columns: 1fr;
     }
@@ -394,17 +400,21 @@
     .home-strip__grid div {
         border-right: none;
         border-bottom: 1px solid #e6eee8;
-        padding: 16px 0;
+        padding: 14px 0;
     }
 
     .home-strip__grid i {
-        flex-basis: 42px;
-        height: 42px;
-        width: 42px;
+        flex-basis: 40px;
+        height: 40px;
+        width: 40px;
     }
 
     .home-strip strong {
-        font-size: 23px;
+        font-size: 21px;
+    }
+
+    .home-strip small {
+        font-size: 13px;
     }
 
     .home-strip__grid div:last-child {
@@ -412,7 +422,7 @@
     }
 
     .home-section {
-        padding-top: 42px;
+        padding-top: 34px;
     }
 
     .home-section__header,
@@ -424,54 +434,135 @@
 
     .home-section__header h2,
     .home-cta h2 {
-        font-size: 28px;
+        font-size: 26px;
+        line-height: 1.16;
+    }
+
+    .home-section__header a {
+        align-items: center;
+        background: #eef7f1;
+        border-radius: 8px;
+        display: inline-flex;
+        min-height: 40px;
+        padding: 0 14px;
+    }
+
+    .home-category-grid {
+        gap: 12px;
+    }
+
+    .home-category {
+        min-height: 132px;
+        padding: 15px;
+    }
+
+    .home-category span {
+        font-size: 18px;
     }
 
     .home-featured-grid {
-        gap: 16px;
+        gap: 14px;
         grid-template-columns: 1fr;
     }
 
+    .home-product {
+        display: grid;
+        grid-template-columns: 108px minmax(0, 1fr);
+        min-height: 132px;
+    }
+
+    .home-product__image {
+        aspect-ratio: auto;
+        height: 100%;
+    }
+
     .home-product__body {
-        padding: 16px;
+        padding: 13px;
+    }
+
+    .home-product__body > span {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .home-product h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .home-product p {
+        display: none;
     }
 
     .home-product__footer {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 10px;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .home-product__footer strong {
+        font-size: 15px;
     }
 
     .home-product__footer a {
-        width: 100%;
+        border-radius: 6px;
+        min-height: 34px;
+        padding: 7px 11px;
+        width: auto;
     }
 
     .home-cta {
-        padding-top: 42px;
+        padding-top: 34px;
     }
 
     .home-cta__inner {
-        padding: 24px;
+        padding: 22px;
     }
 
-    .home-btn,
+    .home-actions .home-btn,
     .home-cta .home-btn {
         box-sizing: border-box;
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 46px;
         width: 100%;
+    }
+
+    .home-cta .home-btn {
+        flex: none;
     }
 }
 
 @media (max-width: 420px) {
     .home-hero h1 {
-        font-size: 32px;
+        font-size: 31px;
     }
 
     .home-category {
-        min-height: 150px;
+        min-height: 124px;
     }
 
     .home-section__header h2,
     .home-cta h2 {
-        font-size: 25px;
+        font-size: 24px;
+    }
+
+    .home-product {
+        grid-template-columns: 94px minmax(0, 1fr);
+    }
+
+    .home-product h3 {
+        font-size: 15px;
+    }
+
+    .home-product__footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .home-product__footer a {
+        width: 100%;
     }
 }

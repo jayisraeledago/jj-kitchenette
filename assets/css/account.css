@@ -96,6 +96,13 @@ body {
     padding: 12px 14px;
 }
 
+.account-message a {
+    color: inherit;
+    display: inline-block;
+    font-weight: 900;
+    margin-top: 6px;
+}
+
 .account-form {
     display: grid;
     gap: 18px;
@@ -119,6 +126,10 @@ body {
     min-height: 54px;
     overflow: hidden;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-input--password {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
 }
 
 .account-input:focus-within {
@@ -173,11 +184,58 @@ body {
     transform: translateY(-1px);
 }
 
+.account-form .account-password-hold-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: #55705d;
+    display: inline-flex;
+    font-size: 16px;
+    height: 44px;
+    justify-content: center;
+    min-height: 0;
+    padding: 0;
+    transform: none;
+    width: 44px;
+}
+
+.account-form .account-password-hold-toggle i {
+    background: transparent;
+    border-radius: 0;
+    color: inherit;
+    height: auto;
+    width: auto;
+}
+
+.account-form .account-password-hold-toggle:hover,
+.account-form .account-password-hold-toggle:active {
+    background: transparent;
+    color: #125827;
+    transform: none;
+}
+
 .account-footer {
     color: #4f584d;
     font-size: 14px;
     margin-top: 24px;
     text-align: center;
+}
+
+.account-footer__row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.account-footer__row + .account-footer__row {
+    margin-top: 10px;
+}
+
+.account-footer__row--primary {
+    margin-bottom: 2px;
 }
 
 .account-footer a {
@@ -202,16 +260,123 @@ body {
 }
 
 @media (max-width: 560px) {
+    body {
+        background: #fbfcf8;
+    }
+
+    .account-container {
+        align-items: flex-start;
+        min-height: auto;
+        padding: 22px 14px 28px;
+    }
+
     .account-card {
-        padding: 30px 22px;
+        border-radius: 8px;
+        box-shadow: 0 14px 34px rgba(24, 45, 30, 0.10);
+        padding: 22px 16px;
+    }
+
+    .account-card-header {
+        margin-bottom: 18px;
     }
 
     .account-card h2 {
-        font-size: 31px;
+        font-size: 28px;
+        line-height: 1.08;
+        margin-bottom: 8px;
+    }
+
+    .account-card h2 i {
+        font-size: 18px;
+    }
+
+    .account-card-header p {
+        font-size: 14px;
+        line-height: 1.45;
+        max-width: 30ch;
+        margin: 0 auto;
+    }
+
+    .account-message {
+        font-size: 13px;
+        line-height: 1.45;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+    }
+
+    .account-form {
+        gap: 12px;
+    }
+
+    .account-form label {
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .account-input {
+        grid-template-columns: 40px minmax(0, 1fr);
+        min-height: 48px;
+    }
+
+    .account-input--password {
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
+    }
+
+    .account-input i {
+        height: 28px;
+        width: 28px;
+    }
+
+    .account-form input {
+        font-size: 14px;
+        min-width: 0;
+        padding: 0 10px 0 2px;
+    }
+
+    .account-form button {
+        font-size: 15px;
+        min-height: 48px;
+    }
+
+    .account-form .account-password-hold-toggle {
+        height: 40px;
+        width: 40px;
+    }
+
+    .account-footer {
+        font-size: 13px;
+        margin-top: 18px;
+    }
+
+    .account-footer__row {
+        gap: 6px;
+    }
+
+    .account-footer a {
+        margin-left: 0;
     }
 
     .account-container::before,
     .account-container::after {
         display: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .account-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .account-card {
+        padding: 18px 12px;
+    }
+
+    .account-card h2 {
+        font-size: 25px;
+    }
+
+    .account-card-header p {
+        font-size: 13px;
     }
 }

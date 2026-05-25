@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db.php';
+require_once __DIR__ . '/includes/order_cancel.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -9,6 +10,16 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = (int) $_SESSION['user_id'];
 $orderId = (int) ($_GET['id'] ?? 0);
+$message = $_GET['message'] ?? '';
+$messageType = $_GET['message_type'] ?? '';
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['form_action'] ?? '') === 'cancel_order') {
+    $cancelOrderId = (int) ($_POST['order_id'] ?? 0);
+    $result = cancelCustomerOrder($conn, $cancelOrderId, $userId);
+
+    header("Location: /jj_kitchenette/order_success.php?id=" . $cancelOrderId . "&message=" . urlencode($result['message']) . "&message_type=" . ($result['success'] ? 'success' : 'error'));
+    exit;
+}
 
 $orderStmt = $conn->prepare("
     SELECT *
@@ -27,10 +38,13 @@ if (!$order) {
 }
 
 $itemStmt = $conn->prepare("
-    SELECT *
-    FROM order_items
-    WHERE order_id = ?
-    ORDER BY id ASC
+    SELECT
+        oi.*,
+        COALESCE(NULLIF(oi.sku, ''), pv.sku, '-') AS display_sku
+    FROM order_items oi
+    LEFT JOIN product_variants pv ON pv.id = oi.variant_id
+    WHERE oi.order_id = ?
+    ORDER BY oi.id ASC
 ");
 $itemStmt->bind_param("i", $orderId);
 $itemStmt->execute();
@@ -52,7 +66,8 @@ function orderStatusLabel($status)
         'pending' => 'Pending',
         'preparing' => 'Preparing',
         'shipped' => 'Shipped',
-        'delivered' => 'Delivered / Picked Up'
+        'delivered' => 'Delivered / Picked Up',
+        'canceled' => 'Canceled'
     ];
 
     return $labels[$status] ?? ucfirst($status);
@@ -60,7 +75,32 @@ function orderStatusLabel($status)
 
 $isPickup = $order['fulfillment_method'] !== 'delivery';
 $statusLabel = orderStatusLabel($order['status']);
-$deliverySavings = (float) $order['delivery_fee'] <= 0 ? 50 : 0;
+$orderStepKeys = ['pending', 'preparing', 'shipped'];
+$currentStepIndex = array_search($order['status'], $orderStepKeys, true);
+if ($currentStepIndex === false) {
+    $currentStepIndex = $order['status'] === 'delivered' ? 2 : 0;
+}
+$orderSteps = [
+    [
+        'key' => 'pending',
+        'icon' => 'fa-check',
+        'title' => 'Order Confirmed',
+        'copy' => "We've received your order."
+    ],
+    [
+        'key' => 'preparing',
+        'icon' => 'fa-bag-shopping',
+        'title' => 'Preparing Your Order',
+        'copy' => "We'll prepare it with care."
+    ],
+    [
+        'key' => 'shipped',
+        'icon' => $isPickup ? 'fa-store' : 'fa-truck',
+        'title' => $isPickup ? 'Ready for Pickup' : 'Out for Delivery',
+        'copy' => "We'll notify you when it's ready."
+    ]
+];
+$deliverySavings = !$isPickup && (float) $order['delivery_fee'] <= 0 ? 50 : 0;
 
 $pageTitle = "Order Confirmation | J&J's Kitchenette";
 $pageCSS = "checkout.css";
@@ -68,8 +108,26 @@ include('store/includes/header.php');
 ?>
 
 <main class="order-success-page">
+    <nav class="order-success-breadcrumbs" aria-label="Breadcrumb">
+        <a href="/jj_kitchenette/">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <a href="/jj_kitchenette/account/orders.php">My Orders</a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <span><?php echo htmlspecialchars($order['order_number']); ?></span>
+    </nav>
+
     <div class="order-success-container">
         <section class="order-success-card">
+            <?php if ($message !== '') { ?>
+                <div class="order-success-message <?= $messageType === 'success' ? 'order-success-message--success' : 'order-success-message--error' ?>">
+                    <i class="fas <?= $messageType === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation' ?>"></i>
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
+            <?php } ?>
+
             <div class="order-success-hero">
                 <div class="order-success-icon">
                     <i class="fas fa-check"></i>
@@ -134,21 +192,15 @@ include('store/includes/header.php');
                 <h2><i class="fas fa-clipboard-check"></i> What's Next?</h2>
 
                 <div class="order-steps">
-                    <div class="is-active">
-                        <i class="fas fa-check"></i>
-                        <strong>Order Confirmed</strong>
-                        <span>We've received your order.</span>
-                    </div>
-                    <div>
-                        <i class="fas fa-bag-shopping"></i>
-                        <strong>Preparing Your Order</strong>
-                        <span>We'll prepare it with care.</span>
-                    </div>
-                    <div>
-                        <i class="fas fa-store"></i>
-                        <strong><?php echo $isPickup ? 'Ready for Pickup' : 'Out for Delivery'; ?></strong>
-                        <span>We'll notify you when it's ready.</span>
-                    </div>
+                    <?php foreach ($orderSteps as $index => $step) {
+                        $stepState = $index < $currentStepIndex ? 'is-complete' : ($index === $currentStepIndex ? 'is-active' : '');
+                    ?>
+                        <div class="<?= htmlspecialchars($stepState) ?>">
+                            <i class="fas <?= htmlspecialchars($stepState === 'is-complete' ? 'fa-check' : $step['icon']) ?>"></i>
+                            <strong><?= htmlspecialchars($step['title']) ?></strong>
+                            <span><?= htmlspecialchars($step['copy']) ?></span>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
 
@@ -165,6 +217,7 @@ include('store/includes/header.php');
             </div>
 
             <?php foreach ($items as $item) {
+                $isCanceledItem = ($item['item_status'] ?? 'active') === 'canceled';
                 $options = array_filter([
                     $item['option1_value'],
                     $item['option2_value'],
@@ -174,16 +227,27 @@ include('store/includes/header.php');
                 });
                 $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
             ?>
-                <div class="order-success-item">
+                <div class="order-success-item <?= $isCanceledItem ? 'order-success-item--canceled' : '' ?>">
                     <img src="/jj_kitchenette/<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($item['product_title']); ?>">
                     <div>
-                        <h3><?php echo htmlspecialchars($item['product_title']); ?></h3>
+                        <h3>
+                            <?php echo htmlspecialchars($item['product_title']); ?>
+                            <?php if ($isCanceledItem) { ?>
+                                <em class="order-success-item__badge">Canceled</em>
+                            <?php } ?>
+                        </h3>
                         <?php if (!empty($options)) { ?>
                             <p><?php echo htmlspecialchars(implode(' / ', $options)); ?></p>
                         <?php } ?>
+                        <span>SKU: <?php echo htmlspecialchars($item['display_sku'] ?? '-'); ?></span>
                         <span>Qty: <?php echo (int) $item['quantity']; ?></span>
+                        <?php if ($isCanceledItem && !empty($item['cancel_reason'])) { ?>
+                            <span>Reason: <?php echo htmlspecialchars($item['cancel_reason']); ?></span>
+                        <?php } ?>
                     </div>
-                    <strong>&#8369;<?php echo number_format((float) $item['subtotal'], 2); ?></strong>
+                    <strong>
+                        <?php echo $isCanceledItem ? 'Removed' : '&#8369;' . number_format((float) $item['subtotal'], 2); ?>
+                    </strong>
                 </div>
             <?php } ?>
 
@@ -227,8 +291,83 @@ include('store/includes/header.php');
                     My Account
                 </a>
             </div>
+
+            <?php if ($order['status'] === 'pending') { ?>
+                <form method="POST" class="order-success-cancel-form js-cancel-order-form">
+                    <input type="hidden" name="form_action" value="cancel_order">
+                    <input type="hidden" name="order_id" value="<?php echo (int) $order['id']; ?>">
+                    <button type="submit">
+                        <i class="fas fa-ban"></i>
+                        Cancel Order
+                    </button>
+                </form>
+            <?php } ?>
         </aside>
     </div>
 </main>
+
+<div class="customer-cancel-order-modal" id="cancelOrderModal" aria-hidden="true">
+    <div class="customer-cancel-order-modal__panel">
+        <button type="button" class="customer-cancel-order-modal__close" id="closeCancelOrderModal" aria-label="Close cancel order confirmation">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="customer-cancel-order-modal__icon">
+            <i class="fas fa-ban"></i>
+        </div>
+
+        <h2>Cancel this order?</h2>
+        <p>This can only be done while the order is pending. Your items will be released back to inventory and you will receive an email update.</p>
+
+        <div class="customer-cancel-order-modal__actions">
+            <button type="button" id="keepOrderButton">Keep Order</button>
+            <button type="button" id="confirmCancelOrderButton">
+                <i class="fas fa-ban"></i>
+                Cancel Order
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cancelOrderModal = document.getElementById('cancelOrderModal');
+    const closeCancelOrderModal = document.getElementById('closeCancelOrderModal');
+    const keepOrderButton = document.getElementById('keepOrderButton');
+    const confirmCancelOrderButton = document.getElementById('confirmCancelOrderButton');
+    let pendingCancelOrderForm = null;
+
+    function openCancelOrderModal(form) {
+        pendingCancelOrderForm = form;
+        cancelOrderModal?.classList.add('is-open');
+        cancelOrderModal?.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCancelOrderConfirmModal() {
+        pendingCancelOrderForm = null;
+        cancelOrderModal?.classList.remove('is-open');
+        cancelOrderModal?.setAttribute('aria-hidden', 'true');
+    }
+
+    document.querySelectorAll('.js-cancel-order-form').forEach(form => {
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            openCancelOrderModal(form);
+        });
+    });
+
+    confirmCancelOrderButton?.addEventListener('click', () => {
+        const form = pendingCancelOrderForm;
+        closeCancelOrderConfirmModal();
+        form?.submit();
+    });
+
+    keepOrderButton?.addEventListener('click', closeCancelOrderConfirmModal);
+    closeCancelOrderModal?.addEventListener('click', closeCancelOrderConfirmModal);
+    cancelOrderModal?.addEventListener('click', event => {
+        if (event.target === cancelOrderModal) {
+            closeCancelOrderConfirmModal();
+        }
+    });
+</script>
 
 <?php include('store/includes/footer.php'); ?>

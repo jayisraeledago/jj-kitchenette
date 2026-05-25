@@ -128,10 +128,17 @@ include('store/includes/header.php');
             </form>
 
             <div class="account-footer">
-                Don't have an account?
-                <a href="/jj_kitchenette/account">
-                    Create Account
-                </a>
+                <div class="account-footer__row account-footer__row--primary">
+                    <a href="/jj_kitchenette/forgot-password.php">
+                        Forgot password?
+                    </a>
+                </div>
+                <div class="account-footer__row">
+                    <span>Don't have an account?</span>
+                    <a href="/jj_kitchenette/account">
+                        Create Account
+                    </a>
+                </div>
             </div>
 
         </div>

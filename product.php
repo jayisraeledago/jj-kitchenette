@@ -257,6 +257,23 @@ include('store/includes/header.php');
 </script>
 
 <main class="product-page">
+    <nav class="product-breadcrumbs" aria-label="Breadcrumb">
+        <a href="/jj_kitchenette/">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <a href="/jj_kitchenette/menu.php">Menu</a>
+        <?php if (!empty($product['category_name'])) { ?>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            <a href="/jj_kitchenette/menu.php?category=<?php echo (int) $product['category_id']; ?>">
+                <?php echo e($product['category_name']); ?>
+            </a>
+        <?php } ?>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <span><?php echo e($product['title']); ?></span>
+    </nav>
+
     <div class="product-container">
         <section class="product-gallery" aria-label="<?php echo e($product['title']); ?> images">
             <div class="main-image">
@@ -323,9 +340,22 @@ include('store/includes/header.php');
                     <span class="price-label">Price</span>
                     <strong class="price">&#8369;<span id="price"><?php echo number_format((float) ($minPrice ?? 0), 2); ?></span></strong>
                 </div>
+
+                <label class="quantity-control quantity-control--mobile" for="quantityMobile">
+                    <span>Quantity</span>
+                    <div class="quantity-stepper">
+                        <button type="button" onclick="changeQuantity(-1)" aria-label="Decrease quantity">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantityMobile" min="1" value="1" inputmode="numeric">
+                        <button type="button" onclick="changeQuantity(1)" aria-label="Increase quantity">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </label>
             </div>
 
-            <label class="quantity-control" for="quantity">
+            <label class="quantity-control quantity-control--desktop" for="quantity">
                 <span>Quantity</span>
                 <div class="quantity-stepper">
                     <button type="button" onclick="changeQuantity(-1)" aria-label="Decrease quantity">
@@ -410,8 +440,23 @@ include('store/includes/header.php');
     const optionSelects = Array.from(document.querySelectorAll(".variant-option"));
     const priceElement = document.getElementById("price");
     const quantityInput = document.getElementById("quantity");
+    const quantityMobileInput = document.getElementById("quantityMobile");
     const addToCartButton = document.getElementById("addToCartButton");
     const orderNowButton = document.getElementById("orderNowButton");
+
+    function activeQuantityInput() {
+        return window.matchMedia("(max-width: 560px)").matches && quantityMobileInput
+            ? quantityMobileInput
+            : quantityInput;
+    }
+
+    function syncQuantityInputs(quantity) {
+        quantityInput.value = quantity;
+
+        if (quantityMobileInput) {
+            quantityMobileInput.value = quantity;
+        }
+    }
 
     function currency(value) {
         return Number(value || 0).toLocaleString("en-PH", {
@@ -433,7 +478,8 @@ include('store/includes/header.php');
 
     function getQuantity(maxStock) {
         const stockLimit = Math.max(0, Number(maxStock || 0));
-        let quantity = parseInt(quantityInput.value, 10);
+        const input = activeQuantityInput();
+        let quantity = parseInt(input.value, 10);
 
         if (!Number.isFinite(quantity) || quantity < 1) {
             quantity = 1;
@@ -443,8 +489,11 @@ include('store/includes/header.php');
             quantity = Math.min(quantity, stockLimit);
         }
 
-        quantityInput.value = quantity;
+        syncQuantityInputs(quantity);
         quantityInput.max = stockLimit > 0 ? stockLimit : 1;
+        if (quantityMobileInput) {
+            quantityMobileInput.max = stockLimit > 0 ? stockLimit : 1;
+        }
 
         return quantity;
     }
@@ -456,6 +505,9 @@ include('store/includes/header.php');
         priceElement.innerText = matched ? currency(matched.price) : "0.00";
 
         quantityInput.disabled = !hasStock;
+        if (quantityMobileInput) {
+            quantityMobileInput.disabled = !hasStock;
+        }
         addToCartButton.disabled = !hasStock;
         orderNowButton.disabled = !hasStock;
         addToCartButton.innerHTML = hasStock
@@ -467,8 +519,9 @@ include('store/includes/header.php');
 
     function changeQuantity(amount) {
         const matched = getSelectedVariant();
-        const current = parseInt(quantityInput.value, 10) || 1;
-        quantityInput.value = current + amount;
+        const input = activeQuantityInput();
+        const current = parseInt(input.value, 10) || 1;
+        syncQuantityInputs(current + amount);
         getQuantity(matched ? matched.inventory : 0);
     }
 
@@ -581,6 +634,13 @@ include('store/includes/header.php');
         const matched = getSelectedVariant();
         getQuantity(matched ? matched.inventory : 0);
     });
+
+    if (quantityMobileInput) {
+        quantityMobileInput.addEventListener("change", () => {
+            const matched = getSelectedVariant();
+            getQuantity(matched ? matched.inventory : 0);
+        });
+    }
 
     updatePurchaseState();
 </script>
