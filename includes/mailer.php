@@ -76,6 +76,8 @@ function sendAppMail(string $toEmail, string $toName, string $subject, string $h
         $mail->Username = $config['username'];
         $mail->Password = $config['password'];
         $mail->Port = (int) $config['port'];
+        $mail->Timeout = 10;
+        $mail->SMTPKeepAlive = false;
 
         if (!empty($config['encryption'])) {
             $mail->SMTPSecure = $config['encryption'];
