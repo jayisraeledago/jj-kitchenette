@@ -65,6 +65,11 @@ function sendAppMail(string $toEmail, string $toName, string $subject, string $h
     $mail = new PHPMailer(true);
 
     try {
+        if (empty($config['username']) || empty($config['password']) || empty($config['from_email'])) {
+            error_log('Mail error: MAIL_USERNAME, MAIL_PASSWORD, and MAIL_FROM_EMAIL must be configured.');
+            return false;
+        }
+
         $mail->isSMTP();
         $mail->Host = $config['host'];
         $mail->SMTPAuth = true;
@@ -104,7 +109,7 @@ function sendAppMail(string $toEmail, string $toName, string $subject, string $h
 
         return $mail->send();
     } catch (Exception $e) {
-        error_log('Mail error: ' . $mail->ErrorInfo);
+        error_log('Mail error: ' . ($mail->ErrorInfo ?: $e->getMessage()));
         return false;
     }
 }

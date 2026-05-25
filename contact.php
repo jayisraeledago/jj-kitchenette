@@ -244,7 +244,7 @@ include('store/includes/header.php');
             </p>
         </div>
 
-        <form class="contact-form" action="contact.php" method="POST">
+        <form class="contact-form" action="/contact.php" method="POST">
             <?php if ($contactNotice !== '') { ?>
                 <div class="contact-alert contact-alert--success">
                     <i class="fas fa-circle-check"></i>
