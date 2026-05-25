@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /jj_kitchenette/
+RewriteBase /
 
 # Keep account.php accessible because /account is an existing folder.
 RewriteRule ^account\.php$ - [L]

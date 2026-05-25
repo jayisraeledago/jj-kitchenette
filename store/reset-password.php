@@ -1,6 +1,6 @@
 <?php
 $email = trim($_GET['email'] ?? '');
-$target = '/jj_kitchenette/store/forgot-password.php?mode=reset';
+$target = '/store/forgot-password.php?mode=reset';
 
 if ($email !== '') {
     $target .= '&email=' . urlencode($email);

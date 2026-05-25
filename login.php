@@ -6,11 +6,11 @@ include 'db.php';
 // IF USER IS ALREADY LOGGED IN
 if (isset($_SESSION['user_id'])) {
     if (in_array($_SESSION['role_name'] ?? '', ['admin', 'staff'], true)) {
-        header("Location: /jj_kitchenette/store/login.php");
+        header("Location: /store/login.php");
         exit;
     }
 
-    header("Location: /jj_kitchenette/account/profile");
+    header("Location: /account/profile");
     exit;
 }
 
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_name'] = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?: $user['email'];
                     $_SESSION['role_name'] = $user['role_name'];
 
-                    header("Location: /jj_kitchenette/account/profile");
+                    header("Location: /account/profile");
                     exit;
                 }
             }
@@ -129,13 +129,13 @@ include('store/includes/header.php');
 
             <div class="account-footer">
                 <div class="account-footer__row account-footer__row--primary">
-                    <a href="/jj_kitchenette/forgot-password.php">
+                    <a href="/forgot-password.php">
                         Forgot password?
                     </a>
                 </div>
                 <div class="account-footer__row">
                     <span>Don't have an account?</span>
-                    <a href="/jj_kitchenette/account">
+                    <a href="/account">
                         Create Account
                     </a>
                 </div>

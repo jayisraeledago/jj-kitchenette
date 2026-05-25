@@ -167,7 +167,7 @@ include('store/includes/header.php');
             <div class="checkout-empty">
                 <i class="fas fa-bag-shopping"></i>
                 <h2>No items to checkout.</h2>
-                <a href="/jj_kitchenette/menu.php">Browse Menu</a>
+                <a href="/menu.php">Browse Menu</a>
             </div>
         <?php } else { ?>
             <div class="checkout-secure-note">
@@ -285,7 +285,7 @@ include('store/includes/header.php');
                             $options = getCheckoutOptions($item);
                             ?>
                             <div class="checkout-item">
-                                <img src="/jj_kitchenette/<?php echo htmlspecialchars($imagePath); ?>" alt="Product">
+                                <img src="/<?php echo htmlspecialchars($imagePath); ?>" alt="Product">
                                 <div class="checkout-item__info">
                                     <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                                     <?php if (!empty($options)) { ?>

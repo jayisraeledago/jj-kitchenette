@@ -52,7 +52,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $message = 'This email is registered as a customer account. Please reset it from the customer password reset page.';
                 $messageType = 'error';
                 $messageLink = [
-                    'href' => '/jj_kitchenette/forgot-password.php?email=' . urlencode($email),
+                    'href' => '/forgot-password.php?email=' . urlencode($email),
                     'label' => 'Go to customer reset'
                 ];
             } elseif (sendPasswordResetCode($conn, $user)) {
@@ -74,8 +74,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <head>
     <title>Forgot Admin Password | J&J's Kitchenette</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
-    <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
@@ -83,7 +83,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <body class="admin-login-page">
     <main class="admin-login-shell">
         <section class="admin-login-card admin-login-card--compact <?= $showResetForm ? 'admin-login-card--reset' : '' ?>">
-            <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+            <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
             <h1><?= $showResetForm ? 'Create New Password' : 'Reset Admin Password' ?></h1>
             <p>
                 <?= $showResetForm
@@ -158,8 +158,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 </form>
 
                 <div class="admin-login-links">
-                    <a href="/jj_kitchenette/store/forgot-password.php<?= $email !== '' ? '?email=' . urlencode($email) : '' ?>">Send another code</a>
-                    <a href="/jj_kitchenette/store/login.php">Back to login</a>
+                    <a href="/store/forgot-password.php<?= $email !== '' ? '?email=' . urlencode($email) : '' ?>">Send another code</a>
+                    <a href="/store/login.php">Back to login</a>
                 </div>
             <?php else: ?>
                 <form method="POST" class="admin-login-form">
@@ -180,8 +180,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 </form>
 
                 <div class="admin-login-links">
-                    <a href="/jj_kitchenette/store/forgot-password.php?mode=reset<?= $email !== '' ? '&email=' . urlencode($email) : '' ?>">I have a code</a>
-                    <a href="/jj_kitchenette/store/login.php">Back to login</a>
+                    <a href="/store/forgot-password.php?mode=reset<?= $email !== '' ? '&email=' . urlencode($email) : '' ?>">I have a code</a>
+                    <a href="/store/login.php">Back to login</a>
                 </div>
             <?php endif; ?>
         </section>

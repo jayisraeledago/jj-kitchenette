@@ -49,14 +49,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $message = 'No account was found with that email address. Please create an account first.';
                 $messageType = 'error';
                 $messageLink = [
-                    'href' => '/jj_kitchenette/account',
+                    'href' => '/account',
                     'label' => 'Create account'
                 ];
             } elseif ($roleName !== 'customer') {
                 $message = 'This email is registered as an admin/staff account. Please reset it from the admin password reset page.';
                 $messageType = 'error';
                 $messageLink = [
-                    'href' => '/jj_kitchenette/store/forgot-password.php?email=' . urlencode($email),
+                    'href' => '/store/forgot-password.php?email=' . urlencode($email),
                     'label' => 'Go to admin reset'
                 ];
             } elseif (sendPasswordResetCode($conn, $user)) {
@@ -150,7 +150,7 @@ include('store/includes/header.php');
 
             <div class="account-footer">
                 Need a new code?
-                <a href="/jj_kitchenette/forgot-password.php<?= $email !== '' ? '?email=' . urlencode($email) : '' ?>">Send another code</a>
+                <a href="/forgot-password.php<?= $email !== '' ? '?email=' . urlencode($email) : '' ?>">Send another code</a>
             </div>
         <?php else: ?>
             <form method="POST" class="account-form">
@@ -169,7 +169,7 @@ include('store/includes/header.php');
 
             <div class="account-footer">
                 Already have a code?
-                <a href="/jj_kitchenette/forgot-password.php?mode=reset<?= $email !== '' ? '&email=' . urlencode($email) : '' ?>">Create new password</a>
+                <a href="/forgot-password.php?mode=reset<?= $email !== '' ? '&email=' . urlencode($email) : '' ?>">Create new password</a>
             </div>
         <?php endif; ?>
     </div>

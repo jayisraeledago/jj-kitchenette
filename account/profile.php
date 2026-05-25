@@ -62,7 +62,7 @@ include('../store/includes/header.php');
                 <p>Manage your account information, addresses, and preferences.</p>
             </div>
 
-            <a href="/jj_kitchenette/account/orders.php" class="profile-orders-link">
+            <a href="/account/orders.php" class="profile-orders-link">
                 <i class="fas fa-bag-shopping"></i>
                 Order History
                 <i class="fas fa-arrow-right"></i>

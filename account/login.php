@@ -1,3 +1,3 @@
 <?php
-header("Location: /jj_kitchenette/login");
+header("Location: /login");
 exit;

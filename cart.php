@@ -157,7 +157,7 @@ include('store/includes/header.php');
 
                         <article class="cart-item">
                             <img
-                                src="/jj_kitchenette/<?php echo htmlspecialchars($item['image_path']); ?>"
+                                src="/<?php echo htmlspecialchars($item['image_path']); ?>"
                                 alt="<?php echo htmlspecialchars($item['title']); ?>"
                                 class="cart-image">
 
@@ -207,7 +207,7 @@ include('store/includes/header.php');
                         </article>
                     <?php } ?>
 
-                    <a href="/jj_kitchenette/menu.php" class="continue-shopping">
+                    <a href="/menu.php" class="continue-shopping">
                         <i class="fas fa-arrow-left"></i>
                         Continue Shopping
                     </a>
@@ -265,13 +265,13 @@ include('store/includes/header.php');
                             $recommendImage = !empty($product['image_path']) ? $product['image_path'] : 'uploads/default.png';
                         ?>
                             <article class="recommendation-card">
-                                <img src="/jj_kitchenette/<?php echo htmlspecialchars($recommendImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>">
+                                <img src="/<?php echo htmlspecialchars($recommendImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>">
 
                                 <div>
                                     <h3><?php echo htmlspecialchars($product['title']); ?></h3>
                                     <p><?php echo htmlspecialchars($product['category_name'] ?? 'Menu'); ?></p>
                                     <strong>&#8369;<?php echo number_format((float) $product['min_price'], 2); ?></strong>
-                                    <a href="/jj_kitchenette/product.php?handle=<?php echo urlencode($product['handle']); ?>">
+                                    <a href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                         <i class="fas fa-shopping-cart"></i>
                                         View Item
                                     </a>
@@ -286,7 +286,7 @@ include('store/includes/header.php');
                 <i class="fas fa-shopping-cart"></i>
                 <h2>Your cart is empty</h2>
                 <p>Browse the menu and add your favorites.</p>
-                <a href="/jj_kitchenette/menu.php">View Menu</a>
+                <a href="/menu.php">View Menu</a>
             </div>
         <?php } ?>
     </div>

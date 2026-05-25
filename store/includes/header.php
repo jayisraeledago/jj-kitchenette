@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars(isset($pageTitle) ? $pageTitle : "J&J's Kitchenette", ENT_QUOTES, 'UTF-8'); ?></title>
-    <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
-    <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/jj_kitchenette/style.css">
+    <link rel="stylesheet" href="/style.css">
 
     <?php if (isset($pageCSS)) { ?>
-        <link rel="stylesheet" href="/jj_kitchenette/assets/css/<?php echo $pageCSS; ?>">
+        <link rel="stylesheet" href="/assets/css/<?php echo $pageCSS; ?>">
     <?php } ?>
 
     <!-- Icons -->
@@ -24,10 +24,10 @@
     <?php
     $currentPage = basename($_SERVER['PHP_SELF']);
     $hasHomePage = file_exists(dirname(__DIR__, 2) . '/index.php');
-    $homeUrl = $hasHomePage ? '/jj_kitchenette/' : '/jj_kitchenette/menu';
+    $homeUrl = $hasHomePage ? '/' : '/menu';
     $accountUrl = isset($_SESSION['user_id'])
-        ? '/jj_kitchenette/account/profile.php'
-        : '/jj_kitchenette/account.php';
+        ? '/account/profile.php'
+        : '/account.php';
     $accountPages = ['account.php', 'login.php', 'profile.php', 'edit_profile.php'];
     $headerSearch = $currentPage === 'menu.php' ? trim($_GET['search'] ?? '') : '';
     $cartCount = 0;
@@ -66,7 +66,7 @@
             <!-- Logo -->
             <div class="logo">
                 <a href="<?php echo $homeUrl; ?>" aria-label="J&J's Kitchenette home">
-                    <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+                    <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
                 </a>
             </div>
 
@@ -82,21 +82,21 @@
                 <?php } ?>
 
                 <a
-                    href="/jj_kitchenette/menu.php"
+                    href="/menu.php"
                     class="nav-link <?php echo $currentPage === 'menu.php' ? 'active' : ''; ?>">
                     <i class="fas fa-utensils"></i>
                     <span>Menu</span>
                 </a>
 
                 <a
-                    href="/jj_kitchenette/location.php"
+                    href="/location.php"
                     class="nav-link <?php echo $currentPage === 'location.php' ? 'active' : ''; ?>">
                     <i class="fas fa-location-dot"></i>
                     <span>Location</span>
                 </a>
 
                 <a
-                    href="/jj_kitchenette/contact.php"
+                    href="/contact.php"
                     class="nav-link <?php echo $currentPage === 'contact.php' ? 'active' : ''; ?>">
                     <i class="fas fa-envelope"></i>
                     <span>Contact Us</span>
@@ -120,7 +120,7 @@
                 </button>
 
                 <a
-                    href="/jj_kitchenette/cart.php"
+                    href="/cart.php"
                     class="cart-link <?php echo $currentPage === 'cart.php' ? 'active' : ''; ?>"
                     aria-label="Cart">
                     <i class="fas fa-shopping-cart"></i>
@@ -141,7 +141,7 @@
 
         </div>
 
-        <form class="header-search-panel" action="/jj_kitchenette/menu.php" method="GET" role="search" aria-hidden="true">
+        <form class="header-search-panel" action="/menu.php" method="GET" role="search" aria-hidden="true">
             <div class="header-search-stack">
                 <div class="header-search-field">
                     <input
@@ -262,7 +262,7 @@
                             `;
                         }).join('')}
                     </div>
-                    <a class="header-search-all" href="/jj_kitchenette/menu.php?search=${encodeURIComponent(query)}">
+                    <a class="header-search-all" href="/menu.php?search=${encodeURIComponent(query)}">
                         Search for "${safeQuery}"
                         <i class="fas fa-arrow-right"></i>
                     </a>
@@ -287,7 +287,7 @@
                 searchTimer = window.setTimeout(function () {
                     searchController = new AbortController();
 
-                    fetch('/jj_kitchenette/search_suggestions.php?q=' + encodeURIComponent(query), {
+                    fetch('/search_suggestions.php?q=' + encodeURIComponent(query), {
                         signal: searchController.signal,
                         headers: {
                             'Accept': 'application/json'

@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function adminRedirectToLogin()
 {
-    header("Location: /jj_kitchenette/store/login.php");
+    header("Location: /store/login.php");
     exit;
 }
 
@@ -15,7 +15,7 @@ function adminForbidden()
     echo "<!DOCTYPE html><html><head><title>Access denied</title></head><body style=\"font-family:Arial,sans-serif;padding:40px;\">";
     echo "<h1>Access denied</h1>";
     echo "<p>You do not have permission to access this admin page.</p>";
-    echo "<p><a href=\"/jj_kitchenette/store/dashboard.php\">Back to dashboard</a></p>";
+    echo "<p><a href=\"/store/dashboard.php\">Back to dashboard</a></p>";
     echo "</body></html>";
     exit;
 }

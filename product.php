@@ -252,21 +252,21 @@ include('store/includes/header.php');
     const productData = <?php echo json_encode([
         'id' => $productId,
         'title' => $product['title'],
-        'image' => '/jj_kitchenette/' . $firstImage
+        'image' => '/' . $firstImage
     ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
 </script>
 
 <main class="product-page">
     <nav class="product-breadcrumbs" aria-label="Breadcrumb">
-        <a href="/jj_kitchenette/">
+        <a href="/">
             <i class="fas fa-home"></i>
             Home
         </a>
         <i class="fas fa-chevron-right" aria-hidden="true"></i>
-        <a href="/jj_kitchenette/menu.php">Menu</a>
+        <a href="/menu.php">Menu</a>
         <?php if (!empty($product['category_name'])) { ?>
             <i class="fas fa-chevron-right" aria-hidden="true"></i>
-            <a href="/jj_kitchenette/menu.php?category=<?php echo (int) $product['category_id']; ?>">
+            <a href="/menu.php?category=<?php echo (int) $product['category_id']; ?>">
                 <?php echo e($product['category_name']); ?>
             </a>
         <?php } ?>
@@ -279,7 +279,7 @@ include('store/includes/header.php');
             <div class="main-image">
                 <img
                     id="mainImage"
-                    src="/jj_kitchenette/<?php echo e($firstImage); ?>"
+                    src="/<?php echo e($firstImage); ?>"
                     alt="<?php echo e($product['title']); ?>">
             </div>
 
@@ -292,7 +292,7 @@ include('store/includes/header.php');
                             onclick="changeImage(this)"
                             aria-label="Show image <?php echo $index + 1; ?>">
                             <img
-                                src="/jj_kitchenette/<?php echo e($img['image_path']); ?>"
+                                src="/<?php echo e($img['image_path']); ?>"
                                 alt="">
                         </button>
                     <?php } ?>
@@ -399,7 +399,7 @@ include('store/includes/header.php');
                     <article class="related-product-card">
                         <a class="related-product-card__image" href="product.php?handle=<?php echo urlencode($related['handle']); ?>">
                             <img
-                                src="/jj_kitchenette/<?php echo e($relatedImage); ?>"
+                                src="/<?php echo e($relatedImage); ?>"
                                 alt="<?php echo e($related['title']); ?>">
                         </a>
 

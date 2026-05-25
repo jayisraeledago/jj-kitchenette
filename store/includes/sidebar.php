@@ -74,13 +74,13 @@ if ($currentRoleName === 'staff' && isset($_SESSION['user_id'], $conn)) {
 }
 
 $adminNavItems = [
-    ['label' => 'Dashboard', 'icon' => 'fa-house', 'href' => '/jj_kitchenette/store/dashboard.php', 'pages' => ['dashboard.php'], 'permission' => null],
-    ['label' => 'Products', 'icon' => 'fa-box', 'href' => '/jj_kitchenette/store/products.php', 'pages' => ['products.php', 'add-product.php', 'edit-product.php'], 'permission' => 'products'],
-    ['label' => 'Orders', 'icon' => 'fa-bag-shopping', 'href' => '/jj_kitchenette/store/orders.php', 'pages' => ['orders.php'], 'permission' => 'orders'],
-    ['label' => 'Customers', 'icon' => 'fa-users', 'href' => '/jj_kitchenette/store/customers.php', 'pages' => ['customers.php', 'customer-detail.php'], 'admin_only' => true],
-    ['label' => 'Categories', 'icon' => 'fa-tag', 'href' => '/jj_kitchenette/store/categories.php', 'pages' => ['categories.php'], 'permission' => 'categories'],
-    ['label' => 'Reports', 'icon' => 'fa-chart-simple', 'href' => '/jj_kitchenette/store/reports.php', 'pages' => ['reports.php'], 'admin_only' => true],
-    ['label' => 'Settings', 'icon' => 'fa-gear', 'href' => '/jj_kitchenette/store/settings.php', 'pages' => ['settings.php', 'staff-users.php'], 'admin_only' => true],
+    ['label' => 'Dashboard', 'icon' => 'fa-house', 'href' => '/store/dashboard.php', 'pages' => ['dashboard.php'], 'permission' => null],
+    ['label' => 'Products', 'icon' => 'fa-box', 'href' => '/store/products.php', 'pages' => ['products.php', 'add-product.php', 'edit-product.php'], 'permission' => 'products'],
+    ['label' => 'Orders', 'icon' => 'fa-bag-shopping', 'href' => '/store/orders.php', 'pages' => ['orders.php'], 'permission' => 'orders'],
+    ['label' => 'Customers', 'icon' => 'fa-users', 'href' => '/store/customers.php', 'pages' => ['customers.php', 'customer-detail.php'], 'admin_only' => true],
+    ['label' => 'Categories', 'icon' => 'fa-tag', 'href' => '/store/categories.php', 'pages' => ['categories.php'], 'permission' => 'categories'],
+    ['label' => 'Reports', 'icon' => 'fa-chart-simple', 'href' => '/store/reports.php', 'pages' => ['reports.php'], 'admin_only' => true],
+    ['label' => 'Settings', 'icon' => 'fa-gear', 'href' => '/store/settings.php', 'pages' => ['settings.php', 'staff-users.php'], 'admin_only' => true],
 ];
 ?>
 
@@ -88,8 +88,8 @@ $adminNavItems = [
     <button type="button" class="admin-mobile-menu-toggle" aria-label="Open admin menu" aria-expanded="false">
         <i class="fa-solid fa-bars"></i>
     </button>
-    <a class="admin-mobile-header__brand" href="/jj_kitchenette/store/dashboard.php" aria-label="J&J's Kitchenette admin">
-        <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+    <a class="admin-mobile-header__brand" href="/store/dashboard.php" aria-label="J&J's Kitchenette admin">
+        <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
     </a>
     <span class="admin-mobile-header__spacer" aria-hidden="true"></span>
 </header>
@@ -100,8 +100,8 @@ $adminNavItems = [
         <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <a class="admin-sidebar__brand" href="/jj_kitchenette/store/dashboard.php" aria-label="J&J's Kitchenette admin">
-        <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+    <a class="admin-sidebar__brand" href="/store/dashboard.php" aria-label="J&J's Kitchenette admin">
+        <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
     </a>
 
     <nav class="admin-sidebar__nav" aria-label="Admin navigation">
@@ -150,11 +150,11 @@ $adminNavItems = [
             </summary>
 
             <div class="admin-user-menu__panel">
-                <a href="/jj_kitchenette/store/change-password.php">
+                <a href="/store/change-password.php">
                     <i class="fa-solid fa-key"></i>
                     <span>Change Password</span>
                 </a>
-                <a href="/jj_kitchenette/store/logout.php">
+                <a href="/store/logout.php">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Logout</span>
                 </a>

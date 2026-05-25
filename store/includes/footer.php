@@ -18,7 +18,7 @@ if (file_exists($footerSettingsFile)) {
 
         <!-- Brand -->
         <div class="footer-section brand">
-            <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+            <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
             <p>Delicious & Affordable Meals. Order now and enjoy quality food at your convenience.</p>
 
             <div class="footer-badges" aria-label="Store highlights">
@@ -32,11 +32,11 @@ if (file_exists($footerSettingsFile)) {
         <div class="footer-section footer-section--explore">
             <h4>Explore</h4>
             <ul>
-                <li><a href="/jj_kitchenette/"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="/jj_kitchenette/menu"><i class="fas fa-utensils"></i> Menu</a></li>
-                <li><a href="/jj_kitchenette/location"><i class="fas fa-location-dot"></i> Location</a></li>
-                <li><a href="/jj_kitchenette/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
-                <li><a href="/jj_kitchenette/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/menu"><i class="fas fa-utensils"></i> Menu</a></li>
+                <li><a href="/location"><i class="fas fa-location-dot"></i> Location</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                <li><a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
             </ul>
         </div>
 

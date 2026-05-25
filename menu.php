@@ -143,7 +143,7 @@ include('store/includes/header.php');
     <section class="menu-hero">
         <img
             class="menu-hero__image"
-            src="/jj_kitchenette/<?php echo htmlspecialchars($heroImage); ?>"
+            src="/<?php echo htmlspecialchars($heroImage); ?>"
             alt=""
             aria-hidden="true">
         <div class="menu-container menu-hero__inner">
@@ -223,7 +223,7 @@ include('store/includes/header.php');
                     <article class="menu-card">
                         <a class="menu-card__image" href="product.php?handle=<?php echo urlencode($product['handle']); ?>">
                             <img
-                                src="/jj_kitchenette/<?php echo htmlspecialchars($imagePath); ?>"
+                                src="/<?php echo htmlspecialchars($imagePath); ?>"
                                 alt="<?php echo htmlspecialchars($product['title']); ?>">
                         </a>
                         <div class="menu-card__body">

@@ -17,7 +17,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['form_action'] ?? '
     $cancelOrderId = (int) ($_POST['order_id'] ?? 0);
     $result = cancelCustomerOrder($conn, $cancelOrderId, $userId);
 
-    header("Location: /jj_kitchenette/order_success.php?id=" . $cancelOrderId . "&message=" . urlencode($result['message']) . "&message_type=" . ($result['success'] ? 'success' : 'error'));
+    header("Location: /order_success.php?id=" . $cancelOrderId . "&message=" . urlencode($result['message']) . "&message_type=" . ($result['success'] ? 'success' : 'error'));
     exit;
 }
 
@@ -109,12 +109,12 @@ include('store/includes/header.php');
 
 <main class="order-success-page">
     <nav class="order-success-breadcrumbs" aria-label="Breadcrumb">
-        <a href="/jj_kitchenette/">
+        <a href="/">
             <i class="fas fa-home"></i>
             Home
         </a>
         <i class="fas fa-chevron-right" aria-hidden="true"></i>
-        <a href="/jj_kitchenette/account/orders.php">My Orders</a>
+        <a href="/account/orders.php">My Orders</a>
         <i class="fas fa-chevron-right" aria-hidden="true"></i>
         <span><?php echo htmlspecialchars($order['order_number']); ?></span>
     </nav>
@@ -228,7 +228,7 @@ include('store/includes/header.php');
                 $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
             ?>
                 <div class="order-success-item <?= $isCanceledItem ? 'order-success-item--canceled' : '' ?>">
-                    <img src="/jj_kitchenette/<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($item['product_title']); ?>">
+                    <img src="/<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($item['product_title']); ?>">
                     <div>
                         <h3>
                             <?php echo htmlspecialchars($item['product_title']); ?>
@@ -282,11 +282,11 @@ include('store/includes/header.php');
             </div>
 
             <div class="order-success-actions">
-                <a href="/jj_kitchenette/menu.php">
+                <a href="/menu.php">
                     <i class="fas fa-utensils"></i>
                     Order Again
                 </a>
-                <a href="/jj_kitchenette/account/profile.php">
+                <a href="/account/profile.php">
                     <i class="fas fa-user"></i>
                     My Account
                 </a>

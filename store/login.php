@@ -3,7 +3,7 @@ session_start();
 include __DIR__ . '/../db.php';
 
 if (isset($_SESSION['user_id']) && in_array($_SESSION['role_name'] ?? '', ['admin', 'staff'], true)) {
-    header("Location: /jj_kitchenette/store/dashboard.php");
+    header("Location: /store/dashboard.php");
     exit;
 }
 
@@ -44,7 +44,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $_SESSION['user_name'] = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?: $user['email'];
             $_SESSION['user_email'] = $user['email'];
 
-            header("Location: /jj_kitchenette/store/dashboard.php");
+            header("Location: /store/dashboard.php");
             exit;
         }
     }
@@ -57,8 +57,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <head>
     <title>Admin Login | J&J's Kitchenette</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
-    <link rel="shortcut icon" type="image/png" href="/jj_kitchenette/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
@@ -66,7 +66,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <body class="admin-login-page">
     <main class="admin-login-shell">
         <section class="admin-login-card">
-            <img src="/jj_kitchenette/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
+            <img src="/assets/images/kitchenette-logo.svg" alt="J&J's Kitchenette">
             <h1>Staff & Admin Login</h1>
             <p>Sign in to manage products, orders, inventory, and store settings.</p>
 
@@ -101,8 +101,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             </form>
 
             <div class="admin-login-links">
-                <a href="/jj_kitchenette/store/forgot-password.php">Forgot password?</a>
-                <a href="/jj_kitchenette/login.php">Customer login</a>
+                <a href="/store/forgot-password.php">Forgot password?</a>
+                <a href="/login.php">Customer login</a>
             </div>
         </section>
     </main>

@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: /jj_kitchenette/account/profile");
+    header("Location: /account/profile");
     exit;
 }
 
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role_id'] = $customerRoleId;
             $_SESSION['user_name'] = trim($firstName . ' ' . $lastName);
 
-            header("Location: /jj_kitchenette/account/profile");
+            header("Location: /account/profile");
             exit;
 
         } else {
@@ -148,7 +148,7 @@ include('store/includes/header.php');
 
             <div class="account-footer">
                 Already have an account?
-                <a href="/jj_kitchenette/login">Login</a>
+                <a href="/login">Login</a>
             </div>
 
         </div>

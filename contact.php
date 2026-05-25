@@ -230,7 +230,7 @@ include('store/includes/header.php');
             <div>
                 <h2>Store Area</h2>
                 <p><?= htmlspecialchars($contactSettings['store_area'], ENT_QUOTES, 'UTF-8') ?></p>
-                <a href="/jj_kitchenette/location.php">View location</a>
+                <a href="/location.php">View location</a>
             </div>
         </article>
     </section>

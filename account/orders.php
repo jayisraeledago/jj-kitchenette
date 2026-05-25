@@ -23,7 +23,7 @@ if (!in_array($statusFilter, $statusOptions, true)) {
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['form_action'] ?? '') === 'cancel_order') {
     $cancelOrderId = (int) ($_POST['order_id'] ?? 0);
     $result = cancelCustomerOrder($conn, $cancelOrderId, $userId);
-    $redirect = '/jj_kitchenette/account/orders.php?message=' . urlencode($result['message']) . '&message_type=' . ($result['success'] ? 'success' : 'error');
+    $redirect = '/account/orders.php?message=' . urlencode($result['message']) . '&message_type=' . ($result['success'] ? 'success' : 'error');
 
     if ($statusFilter !== '') {
         $redirect .= '&status=' . urlencode($statusFilter);
@@ -143,7 +143,7 @@ include('../store/includes/header.php');
                 <p>Track and manage all your orders in one place.</p>
             </div>
 
-            <a href="/jj_kitchenette/account/profile.php" class="profile-orders-link">
+            <a href="/account/profile.php" class="profile-orders-link">
                 <i class="fas fa-user"></i>
                 Profile
             </a>
@@ -159,7 +159,7 @@ include('../store/includes/header.php');
 
             <div class="orders-controls">
                 <nav class="orders-tabs" aria-label="Order status filters">
-                    <a href="/jj_kitchenette/account/orders.php<?php echo $search !== '' ? '?search=' . urlencode($search) : ''; ?>" class="<?php echo $statusFilter === '' ? 'active' : ''; ?>">
+                    <a href="/account/orders.php<?php echo $search !== '' ? '?search=' . urlencode($search) : ''; ?>" class="<?php echo $statusFilter === '' ? 'active' : ''; ?>">
                         All Orders
                     </a>
 
@@ -169,13 +169,13 @@ include('../store/includes/header.php');
                             $query['search'] = $search;
                         }
                     ?>
-                        <a href="/jj_kitchenette/account/orders.php?<?php echo htmlspecialchars(http_build_query($query)); ?>" class="<?php echo $statusFilter === $status ? 'active' : ''; ?>">
+                        <a href="/account/orders.php?<?php echo htmlspecialchars(http_build_query($query)); ?>" class="<?php echo $statusFilter === $status ? 'active' : ''; ?>">
                             <?php echo htmlspecialchars(profileOrderStatusLabel($status)); ?>
                         </a>
                     <?php } ?>
                 </nav>
 
-                <form class="orders-search" method="GET" action="/jj_kitchenette/account/orders.php">
+                <form class="orders-search" method="GET" action="/account/orders.php">
                     <?php if ($statusFilter !== '') { ?>
                         <input type="hidden" name="status" value="<?php echo htmlspecialchars($statusFilter); ?>">
                     <?php } ?>
@@ -219,7 +219,7 @@ include('../store/includes/header.php');
                             class="profile-order order-history-card"
                             role="link"
                             tabindex="0"
-                            data-order-url="/jj_kitchenette/order_success.php?id=<?= (int) $order['id'] ?>">
+                            data-order-url="/order_success.php?id=<?= (int) $order['id'] ?>">
                             <div class="order-history-icon profile-order-status--<?= htmlspecialchars($order['status']) ?>">
                                 <i class="fas <?= htmlspecialchars(profileOrderStatusIcon($order['status'])) ?>"></i>
                             </div>
@@ -275,7 +275,7 @@ include('../store/includes/header.php');
 
                                             <div class="profile-order-item <?= $isCanceledItem ? 'profile-order-item--canceled' : '' ?>">
                                                 <div class="order-item-image-wrap">
-                                                    <img src="/jj_kitchenette/<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($item['product_title']) ?>">
+                                                    <img src="/<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($item['product_title']) ?>">
                                                     <span><?= (int) $item['quantity'] ?></span>
                                                 </div>
 
@@ -320,7 +320,7 @@ include('../store/includes/header.php');
 
                 <div class="profile-empty-orders">
                     <p>No orders found.</p>
-                    <a href="/jj_kitchenette/menu.php">Browse Menu</a>
+                    <a href="/menu.php">Browse Menu</a>
                 </div>
 
             <?php endif; ?>

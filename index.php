@@ -101,7 +101,7 @@ include('store/includes/header.php');
 <main class="home-page">
     <section
         class="home-hero"
-        style="background-image: url('/jj_kitchenette/<?php echo htmlspecialchars($heroImage); ?>');">
+        style="background-image: url('/<?php echo htmlspecialchars($heroImage); ?>');">
         <div class="home-hero__overlay"></div>
 
         <div class="home-container home-hero__content">
@@ -112,10 +112,10 @@ include('store/includes/header.php');
             </p>
 
             <div class="home-actions">
-                <a href="/jj_kitchenette/menu.php" class="home-btn home-btn--primary">
+                <a href="/menu.php" class="home-btn home-btn--primary">
                     View Menu
                 </a>
-                <a href="/jj_kitchenette/cart.php" class="home-btn home-btn--secondary">
+                <a href="/cart.php" class="home-btn home-btn--secondary">
                     <i class="fas fa-shopping-cart"></i>
                     Cart
                 </a>
@@ -157,7 +157,7 @@ include('store/includes/header.php');
                         <p class="home-eyebrow">Browse by category</p>
                         <h2>Find your next order faster</h2>
                     </div>
-                    <a href="/jj_kitchenette/menu.php">All categories</a>
+                    <a href="/menu.php">All categories</a>
                 </div>
 
                 <div class="home-category-grid">
@@ -166,9 +166,9 @@ include('store/includes/header.php');
                     ?>
                         <a
                             class="home-category"
-                            href="/jj_kitchenette/menu.php?category=<?php echo (int) $category['id']; ?>">
+                            href="/menu.php?category=<?php echo (int) $category['id']; ?>">
                             <img
-                                src="/jj_kitchenette/<?php echo htmlspecialchars($categoryImage); ?>"
+                                src="/<?php echo htmlspecialchars($categoryImage); ?>"
                                 alt="<?php echo htmlspecialchars($category['name']); ?>">
                             <span><?php echo htmlspecialchars($category['name']); ?></span>
                             <small><?php echo (int) $category['product_count']; ?> item<?php echo (int) $category['product_count'] === 1 ? '' : 's'; ?></small>
@@ -186,7 +186,7 @@ include('store/includes/header.php');
                     <p class="home-eyebrow">Customer-ready picks</p>
                     <h2>Featured menu items</h2>
                 </div>
-                <a href="/jj_kitchenette/menu.php">View full menu</a>
+                <a href="/menu.php">View full menu</a>
             </div>
 
             <?php if (empty($featuredProducts)) { ?>
@@ -200,16 +200,16 @@ include('store/includes/header.php');
                         $productImage = !empty($product['image_path']) ? $product['image_path'] : 'uploads/default.png';
                     ?>
                         <article class="home-product">
-                            <a class="home-product__image" href="/jj_kitchenette/product.php?handle=<?php echo urlencode($product['handle']); ?>">
+                            <a class="home-product__image" href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                 <img
-                                    src="/jj_kitchenette/<?php echo htmlspecialchars($productImage); ?>"
+                                    src="/<?php echo htmlspecialchars($productImage); ?>"
                                     alt="<?php echo htmlspecialchars($product['title']); ?>">
                             </a>
 
                             <div class="home-product__body">
                                 <span><?php echo htmlspecialchars($product['category_name'] ?? 'Menu'); ?></span>
                                 <h3>
-                                    <a href="/jj_kitchenette/product.php?handle=<?php echo urlencode($product['handle']); ?>">
+                                    <a href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                         <?php echo htmlspecialchars($product['title']); ?>
                                     </a>
                                 </h3>
@@ -217,7 +217,7 @@ include('store/includes/header.php');
 
                                 <div class="home-product__footer">
                                     <strong>&#8369;<?php echo number_format((float) $product['min_price'], 2); ?></strong>
-                                    <a href="/jj_kitchenette/product.php?handle=<?php echo urlencode($product['handle']); ?>">
+                                    <a href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                         Order
                                     </a>
                                 </div>
@@ -235,7 +235,7 @@ include('store/includes/header.php');
                 <p class="home-eyebrow">Ready to eat?</p>
                 <h2>Start with the menu and build your order.</h2>
             </div>
-            <a href="/jj_kitchenette/menu.php" class="home-btn home-btn--primary">Browse Menu</a>
+            <a href="/menu.php" class="home-btn home-btn--primary">Browse Menu</a>
         </div>
     </section>
 </main>

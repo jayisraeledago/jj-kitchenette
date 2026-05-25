@@ -148,7 +148,7 @@ function sendStaffInvitationCode(mysqli $conn, array $user, string $roleName): b
     $safeName = htmlspecialchars(strtoupper($displayName), ENT_QUOTES, 'UTF-8');
     $safeRole = htmlspecialchars(ucfirst($roleName), ENT_QUOTES, 'UTF-8');
     $safeCode = htmlspecialchars($code, ENT_QUOTES, 'UTF-8');
-    $setupUrl = 'http://localhost/jj_kitchenette/store/reset-password.php?email=' . urlencode($email);
+    $setupUrl = 'http://localhost/store/reset-password.php?email=' . urlencode($email);
     $safeSetupUrl = htmlspecialchars($setupUrl, ENT_QUOTES, 'UTF-8');
     $logoPath = __DIR__ . '/../assets/images/kitchenette-logo.svg';
     $embeddedImages = file_exists($logoPath) ? ['kitchenetteLogo' => $logoPath] : [];

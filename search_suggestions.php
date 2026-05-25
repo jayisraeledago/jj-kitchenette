@@ -64,8 +64,8 @@ while ($row = $result->fetch_assoc()) {
         'title' => $row['title'],
         'category' => $row['category_name'] ?: 'Menu',
         'price' => '₱' . number_format((float) $row['min_price'], 2),
-        'image' => '/jj_kitchenette/' . ltrim($imagePath, '/'),
-        'url' => '/jj_kitchenette/product.php?handle=' . urlencode($row['handle']),
+        'image' => '/' . ltrim($imagePath, '/'),
+        'url' => '/product.php?handle=' . urlencode($row['handle']),
     ];
 }
 
