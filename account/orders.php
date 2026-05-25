@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/session.php';
+startAppSession();
 include '../db.php';
 require_once __DIR__ . '/../includes/order_cancel.php';
 

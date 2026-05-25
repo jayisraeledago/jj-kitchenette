@@ -10,6 +10,8 @@ services:
         value: https://jj-kitchenette.onrender.com
       - key: APP_TIMEZONE
         value: Asia/Manila
+      - key: APP_SESSION_LIFETIME
+        value: 28800
       - key: DB_HOST
         sync: false
       - key: DB_PORT

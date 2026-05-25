@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/session.php';
+startAppSession();
 include __DIR__ . '/../db.php';
 
 if (isset($_SESSION['user_id']) && in_array($_SESSION['role_name'] ?? '', ['admin', 'staff'], true)) {

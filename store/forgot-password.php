@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/session.php';
+startAppSession();
 include __DIR__ . '/../db.php';
 include __DIR__ . '/../includes/password_reset.php';
 
