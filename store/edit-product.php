@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/images.php';
 include __DIR__ . '/includes/functions.php';
 include __DIR__ . '/includes/admin-auth.php';
 requireAdminPermission($conn, ['products', 'inventory']);
@@ -78,9 +79,9 @@ if (isset($_POST['delete'])) {
     ");
 
     while ($img = mysqli_fetch_assoc($images)) {
-        $file = $img['image_path'];
+        $file = __DIR__ . "/../" . $img['image_path'];
 
-        if ($file !== 'default.png' && file_exists($file)) {
+        if (basename($file) !== 'default.png' && file_exists($file)) {
             unlink($file);
         }
     }
@@ -186,10 +187,10 @@ if (isset($_POST['save'])) {
 
             if ($row = mysqli_fetch_assoc($res)) {
 
-                $file = $row['image_path'];
+                $file = __DIR__ . "/../" . $row['image_path'];
 
                 // delete file
-                if ($file && file_exists($file)) {
+                if (basename($file) !== 'default.png' && file_exists($file)) {
                     unlink($file);
                 }
             }
@@ -478,7 +479,7 @@ if (isset($_POST['save'])) {
 
                                     <?php while ($img = mysqli_fetch_assoc($productImages)): ?>
                                         <div class="image-item" data-id="<?= $img['id'] ?>">
-                                            <img src="../<?= $img['image_path'] ?>">
+                                            <img src="<?= htmlspecialchars(appImageUrl($img['image_path'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
 
                                             <button type="button" class="delete-img-btn">✕</button>
                                         </div>

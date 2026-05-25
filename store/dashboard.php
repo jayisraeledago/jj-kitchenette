@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/images.php';
 include __DIR__ . '/includes/admin-auth.php';
 requireAdminPermission($conn);
 
@@ -43,8 +44,7 @@ function dashboardMoney($amount)
 
 function dashboardImagePath($path)
 {
-    $path = trim((string) $path);
-    return $path !== '' ? '../' . $path : '../uploads/default.png';
+    return appImageUrl($path);
 }
 
 function dashboardValidDate($date)

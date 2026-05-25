@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
 $pageTitle = "Menu | J&J's Kitchenette";
@@ -135,7 +136,7 @@ function menuCategoryIcon($name)
     return 'fa-bowl-rice';
 }
 
-$heroImage = !empty($products[0]['image_path']) ? $products[0]['image_path'] : 'uploads/default.png';
+$heroImage = appImageUrl($products[0]['image_path'] ?? '');
 
 include('store/includes/header.php');
 ?>
@@ -144,7 +145,7 @@ include('store/includes/header.php');
     <section class="menu-hero">
         <img
             class="menu-hero__image"
-            src="/<?php echo htmlspecialchars($heroImage); ?>"
+            src="<?php echo htmlspecialchars($heroImage); ?>"
             alt=""
             aria-hidden="true">
         <div class="menu-container menu-hero__inner">
@@ -218,13 +219,13 @@ include('store/includes/header.php');
         <?php } else { ?>
             <div class="menu-grid">
                 <?php foreach ($products as $product) {
-                    $imagePath = !empty($product['image_path']) ? $product['image_path'] : 'uploads/default.png';
+                    $imagePath = appImageUrl($product['image_path'] ?? '');
                     $inStock = (int) $product['total_stock'] > 0;
                 ?>
                     <article class="menu-card">
                         <a class="menu-card__image" href="product.php?handle=<?php echo urlencode($product['handle']); ?>">
                             <img
-                                src="/<?php echo htmlspecialchars($imagePath); ?>"
+                                src="<?php echo htmlspecialchars($imagePath); ?>"
                                 alt="<?php echo htmlspecialchars($product['title']); ?>">
                         </a>
                         <div class="menu-card__body">

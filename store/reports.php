@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/images.php';
 include __DIR__ . '/includes/admin-auth.php';
 requireAdminOnly();
 
@@ -21,8 +22,7 @@ function reportPaymentLabel($method)
 
 function reportImagePath($path)
 {
-    $path = trim((string) $path);
-    return $path !== '' ? '../' . $path : '../uploads/default.png';
+    return appImageUrl($path);
 }
 
 $defaultStart = date('Y-m-d', strtotime('monday this week'));

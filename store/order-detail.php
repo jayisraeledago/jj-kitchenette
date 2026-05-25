@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/images.php';
 include __DIR__ . '/includes/admin-auth.php';
 require_once __DIR__ . '/../includes/order_email.php';
 requireAdminPermission($conn, ['orders']);
@@ -466,7 +467,7 @@ if ($statusIndex === false) {
                                     ], function ($value) {
                                         return $value !== null && $value !== '' && strtolower($value) !== 'default';
                                     });
-                                    $imagePath = !empty($item['image_path']) ? '../' . $item['image_path'] : '../uploads/default.png';
+                                    $imagePath = appImageUrl($item['image_path'] ?? '');
                                     $canCancelItem = !$isCanceledItem && $activeItemCount > 1 && in_array($order['status'], ['pending', 'preparing'], true);
                                     ?>
                                     <div class="order-detail-item <?= $isCanceledItem ? 'order-detail-item--canceled' : '' ?>">

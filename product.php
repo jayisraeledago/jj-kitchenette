@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
 $handle = trim($_GET['handle'] ?? '');
@@ -162,7 +163,7 @@ while ($variant = $variantResult->fetch_assoc()) {
     }
 }
 
-$firstImage = $images[0]['image_path'];
+$firstImage = appImageUrl($images[0]['image_path'] ?? '');
 
 $relatedProducts = [];
 $relatedProductIds = [$productId];
@@ -280,7 +281,7 @@ include('store/includes/header.php');
             <div class="main-image">
                 <img
                     id="mainImage"
-                    src="/<?php echo e($firstImage); ?>"
+                    src="<?php echo e($firstImage); ?>"
                     alt="<?php echo e($product['title']); ?>">
             </div>
 
@@ -293,7 +294,7 @@ include('store/includes/header.php');
                             onclick="changeImage(this)"
                             aria-label="Show image <?php echo $index + 1; ?>">
                             <img
-                                src="/<?php echo e($img['image_path']); ?>"
+                                src="<?php echo e(appImageUrl($img['image_path'] ?? '')); ?>"
                                 alt="">
                         </button>
                     <?php } ?>
@@ -394,13 +395,13 @@ include('store/includes/header.php');
 
             <div class="related-products__grid">
                 <?php foreach ($relatedProducts as $related) {
-                    $relatedImage = !empty($related['image_path']) ? $related['image_path'] : 'uploads/default.png';
+                    $relatedImage = appImageUrl($related['image_path'] ?? '');
                     $relatedInStock = (int) ($related['total_stock'] ?? 0) > 0;
                 ?>
                     <article class="related-product-card">
                         <a class="related-product-card__image" href="product.php?handle=<?php echo urlencode($related['handle']); ?>">
                             <img
-                                src="/<?php echo e($relatedImage); ?>"
+                                src="<?php echo e($relatedImage); ?>"
                                 alt="<?php echo e($related['title']); ?>">
                         </a>
 

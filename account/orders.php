@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
 startAppSession();
+require_once __DIR__ . '/../includes/images.php';
 include '../db.php';
 require_once __DIR__ . '/../includes/order_cancel.php';
 
@@ -271,12 +272,12 @@ include('../store/includes/header.php');
                                             ], function ($value) {
                                                 return $value !== null && $value !== '' && strtolower($value) !== 'default';
                                             });
-                                            $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
+                                            $imagePath = appImageUrl($item['image_path'] ?? '');
                                             ?>
 
                                             <div class="profile-order-item <?= $isCanceledItem ? 'profile-order-item--canceled' : '' ?>">
                                                 <div class="order-item-image-wrap">
-                                                    <img src="/<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($item['product_title']) ?>">
+                                                    <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($item['product_title']) ?>">
                                                     <span><?= (int) $item['quantity'] ?></span>
                                                 </div>
 

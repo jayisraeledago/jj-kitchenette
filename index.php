@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
 $pageTitle = "Home | J&J's Kitchenette";
@@ -54,9 +55,7 @@ while ($row = $featuredResult->fetch_assoc()) {
 }
 
 $heroProduct = $featuredProducts[0] ?? null;
-$heroImage = !empty($heroProduct['image_path'])
-    ? $heroProduct['image_path']
-    : 'uploads/default.png';
+$heroImage = appImageUrl($heroProduct['image_path'] ?? '');
 
 $categoryStmt = $conn->prepare("
     SELECT
@@ -102,7 +101,7 @@ include('store/includes/header.php');
 <main class="home-page">
     <section
         class="home-hero"
-        style="background-image: url('/<?php echo htmlspecialchars($heroImage); ?>');">
+        style="background-image: url('<?php echo htmlspecialchars($heroImage); ?>');">
         <div class="home-hero__overlay"></div>
 
         <div class="home-container home-hero__content">
@@ -163,13 +162,13 @@ include('store/includes/header.php');
 
                 <div class="home-category-grid">
                     <?php foreach ($categories as $category) {
-                        $categoryImage = !empty($category['image_path']) ? $category['image_path'] : 'uploads/default.png';
+                        $categoryImage = appImageUrl($category['image_path'] ?? '');
                     ?>
                         <a
                             class="home-category"
                             href="/menu.php?category=<?php echo (int) $category['id']; ?>">
                             <img
-                                src="/<?php echo htmlspecialchars($categoryImage); ?>"
+                                src="<?php echo htmlspecialchars($categoryImage); ?>"
                                 alt="<?php echo htmlspecialchars($category['name']); ?>">
                             <span><?php echo htmlspecialchars($category['name']); ?></span>
                             <small><?php echo (int) $category['product_count']; ?> item<?php echo (int) $category['product_count'] === 1 ? '' : 's'; ?></small>
@@ -198,12 +197,12 @@ include('store/includes/header.php');
             <?php } else { ?>
                 <div class="home-featured-grid">
                     <?php foreach ($featuredProducts as $product) {
-                        $productImage = !empty($product['image_path']) ? $product['image_path'] : 'uploads/default.png';
+                        $productImage = appImageUrl($product['image_path'] ?? '');
                     ?>
                         <article class="home-product">
                             <a class="home-product__image" href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                 <img
-                                    src="/<?php echo htmlspecialchars($productImage); ?>"
+                                    src="<?php echo htmlspecialchars($productImage); ?>"
                                     alt="<?php echo htmlspecialchars($product['title']); ?>">
                             </a>
 

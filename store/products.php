@@ -1,10 +1,9 @@
 <?php
 include __DIR__ . '/../db.php';
+include __DIR__ . '/../includes/images.php';
 include __DIR__ . '/includes/admin-auth.php';
 requireAdminPermission($conn, ['products', 'inventory']);
-?>
 
-<?php
 function deleteProductFile($path)
 {
     if (empty($path) || basename($path) === 'default.png') {
@@ -33,20 +32,6 @@ function deleteProducts($conn, $productIds)
 
         while ($img = mysqli_fetch_assoc($images)) {
             deleteProductFile(__DIR__ . "/../" . $img['image_path']);
-        }
-
-        $variants = mysqli_query($conn, "
-            SELECT image
-            FROM product_variants
-            WHERE product_id = '$product_id'
-        ");
-
-        while ($variant = mysqli_fetch_assoc($variants)) {
-            if (empty($variant['image'])) {
-                continue;
-            }
-
-            deleteProductFile(__DIR__ . "/uploads/variants/" . $variant['image']);
         }
 
         $options = mysqli_query($conn, "
@@ -370,7 +355,7 @@ $filterQuery = '&status=' . urlencode($statusFilter) . '&category=' . urlencode(
                         </td>";
 
                         // IMAGE
-                        $image = !empty($row['main_image']) ? "../" . $row['main_image'] : "../uploads/default.png";
+                        $image = appImageUrl($row['main_image'] ?? '');
                         $image = htmlspecialchars($image, ENT_QUOTES, 'UTF-8');
                         echo "<td><img src='$image' class='product-thumb' alt=''></td>";
 
