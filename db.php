@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'Asia/Manila');
+
 $dbHost = getenv('DB_HOST') ?: 'localhost';
 $dbUser = getenv('DB_USERNAME') ?: 'root';
 $dbPass = getenv('DB_PASSWORD') ?: '';
@@ -23,4 +25,6 @@ $conn->real_connect($dbHost, $dbUser, $dbPass, $dbName, $dbPort);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+$conn->query("SET time_zone = '+08:00'");
 ?>

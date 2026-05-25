@@ -8,6 +8,8 @@ services:
     envVars:
       - key: APP_URL
         value: https://jj-kitchenette.onrender.com
+      - key: APP_TIMEZONE
+        value: Asia/Manila
       - key: DB_HOST
         sync: false
       - key: DB_PORT
