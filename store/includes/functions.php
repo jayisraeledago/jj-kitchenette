@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__DIR__, 2) . '/includes/images.php';
+
 function resolveProductCategoryId($conn, $category_id, $new_category_name)
 {
     if ($category_id !== '__new__') {
@@ -107,6 +109,8 @@ function ensureUniqueVariantSku($conn, $sku, &$reservedSkus = [], $excludeProduc
 
 function uploadProductImages($conn, $product_id)
 {
+    ensureProductImageStorage($conn);
+
     $uploaded = false;
 
     if (empty($_FILES['images']['name'][0])) {
@@ -161,22 +165,31 @@ function uploadProductImages($conn, $product_id)
         $imageName = bin2hex(random_bytes(8)) . "_" . $cleanName;
 
         $target = $uploadDir . $imageName;
+        $imageData = file_get_contents($tmpName);
+
+        if ($imageData === false) {
+            continue;
+        }
 
         if (move_uploaded_file($tmpName, $target)) {
 
             $imagePath = "uploads/" . $imageName;
+            $imageMime = $imageInfo['mime'] ?? mime_content_type($target) ?: 'image/jpeg';
 
             $currentOrder++; // ✅ APPEND TO END
 
             // OPTIONAL: first new image becomes main if none exists
             $isMain = 0;
 
-            mysqli_query($conn, "
-                INSERT INTO product_images 
-                (product_id, image_path, is_main, sort_order)
-                VALUES 
-                ('$product_id', '$imagePath', '$isMain', '$currentOrder')
+            $stmt = $conn->prepare("
+                INSERT INTO product_images
+                (product_id, image_path, image_mime, image_data, is_main, sort_order)
+                VALUES (?, ?, ?, ?, ?, ?)
             ");
+            $null = null;
+            $stmt->bind_param("issbii", $product_id, $imagePath, $imageMime, $null, $isMain, $currentOrder);
+            $stmt->send_long_data(3, $imageData);
+            $stmt->execute();
 
             $uploaded = true;
         }
