@@ -342,6 +342,8 @@ if (isset($_POST['save'])) {
     // =========================
 // INSERT VARIANTS
 // =========================
+    $reservedSkus = [];
+
     if ($hasRealVariants) {
 
         saveOption($conn, $product_id, $option1_name, $option1);
@@ -366,6 +368,7 @@ if (isset($_POST['save'])) {
             if (empty($sku)) {
                 $sku = generateSkuFromTitle($title, $i + 1);
             }
+            $sku = ensureUniqueVariantSku($conn, $sku, $reservedSkus, (int) $product_id);
 
             mysqli_query($conn, "
             INSERT INTO product_variants 
@@ -387,6 +390,7 @@ if (isset($_POST['save'])) {
         if (empty($base_sku)) {
             $base_sku = generateSkuFromTitle($title);
         }
+        $base_sku = ensureUniqueVariantSku($conn, $base_sku, $reservedSkus, (int) $product_id);
 
         mysqli_query($conn, "
         INSERT INTO product_variants 

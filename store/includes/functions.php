@@ -60,6 +60,51 @@ function generateSkuFromTitle($title, $suffix = '')
     return substr($sku, 0, $maxBaseLength) . $suffix;
 }
 
+function variantSkuExists($conn, $sku, $excludeProductId = null)
+{
+    if ($excludeProductId !== null) {
+        $stmt = $conn->prepare("
+            SELECT id
+            FROM product_variants
+            WHERE sku = ? AND product_id != ?
+            LIMIT 1
+        ");
+        $stmt->bind_param("si", $sku, $excludeProductId);
+    } else {
+        $stmt = $conn->prepare("
+            SELECT id
+            FROM product_variants
+            WHERE sku = ?
+            LIMIT 1
+        ");
+        $stmt->bind_param("s", $sku);
+    }
+
+    $stmt->execute();
+    return $stmt->get_result()->num_rows > 0;
+}
+
+function ensureUniqueVariantSku($conn, $sku, &$reservedSkus = [], $excludeProductId = null)
+{
+    $base = strtoupper(preg_replace('/\s+/', '', trim((string) $sku)));
+
+    if ($base === '') {
+        $base = 'PRODUCT';
+    }
+
+    $candidate = $base;
+    $counter = 2;
+
+    while (in_array($candidate, $reservedSkus, true) || variantSkuExists($conn, $candidate, $excludeProductId)) {
+        $suffix = '-' . $counter;
+        $candidate = substr($base, 0, max(1, 100 - strlen($suffix))) . $suffix;
+        $counter++;
+    }
+
+    $reservedSkus[] = $candidate;
+    return $candidate;
+}
+
 function uploadProductImages($conn, $product_id)
 {
     $uploaded = false;
