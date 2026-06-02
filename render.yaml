@@ -41,3 +41,5 @@ services:
         sync: false
       - key: MAIL_FROM_NAME
         value: J&J's Kitchenette
+      - key: BREVO_API_KEY
+        sync: false

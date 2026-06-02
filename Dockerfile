@@ -6,7 +6,10 @@ RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --opt
 
 FROM php:8.3-apache
 
-RUN docker-php-ext-install mysqli pdo pdo_mysql \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libcurl4-openssl-dev \
+    && docker-php-ext-install curl mysqli pdo pdo_mysql \
+    && rm -rf /var/lib/apt/lists/* \
     && a2enmod rewrite expires headers
 
 WORKDIR /var/www/html

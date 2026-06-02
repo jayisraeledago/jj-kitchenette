@@ -104,6 +104,11 @@ function sendBrevoMail(array $config, string $toEmail, string $toName, string $s
         return false;
     }
 
+    if (!function_exists('curl_init')) {
+        error_log('Mail error: PHP curl extension is required for Brevo API mail.');
+        return false;
+    }
+
     $payload = [
         'sender' => [
             'name' => $config['from_name'] ?: "J&J's Kitchenette",
