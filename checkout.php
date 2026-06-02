@@ -457,7 +457,8 @@ include('store/includes/header.php');
         const addressInputs = document.querySelectorAll('input[name="address_id"]');
         const needsAddress = paymentMethod === 'cod';
         const selectedCity = getSelectedCity();
-        const isCodOutsideDeliveryArea = paymentMethod === 'cod' && selectedCity !== '' && !isTangubCity(selectedCity);
+        const hasSelectedAddress = Boolean(getSelectedAddressRadio());
+        const isCodOutsideDeliveryArea = paymentMethod === 'cod' && hasSelectedAddress && !isTangubCity(selectedCity);
         const remainingForFreeDelivery = Math.max(0, 200 - checkoutSubtotal);
 
         addressInputs.forEach(input => {
@@ -491,11 +492,11 @@ include('store/includes/header.php');
         }
 
         if (placeOrderBtn) {
-            placeOrderBtn.disabled = (needsAddress && !getSelectedAddressRadio()) || isCodOutsideDeliveryArea;
+            placeOrderBtn.disabled = (needsAddress && !hasSelectedAddress) || isCodOutsideDeliveryArea;
         }
 
         if (checkoutWarning) {
-            if (paymentMethod === 'cod' && !getSelectedAddressRadio()) {
+            if (paymentMethod === 'cod' && !hasSelectedAddress) {
                 checkoutWarning.hidden = false;
                 checkoutWarning.innerText = 'Please add your delivery address first before placing a Cash on Delivery order.';
             } else if (isCodOutsideDeliveryArea) {
