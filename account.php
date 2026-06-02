@@ -14,8 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $firstName = trim($_POST['first_name'] ?? '');
     $lastName = trim($_POST['last_name'] ?? '');
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
 
     // CUSTOMER ROLE ID
     $roleQuery = $conn->prepare("
@@ -39,6 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($firstName === '' || $lastName === '') {
 
         $message = "First name and last name are required.";
+
+    } elseif ($password !== $confirmPassword) {
+
+        $message = "Password and confirmation do not match.";
 
     } elseif ($result->num_rows > 0) {
 
@@ -138,6 +143,14 @@ include('store/includes/header.php');
                     <span class="account-input">
                         <i class="fas fa-lock"></i>
                         <input type="password" name="password" placeholder="Create a password" required>
+                    </span>
+                </label>
+
+                <label>
+                    Confirm Password
+                    <span class="account-input">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="confirm_password" placeholder="Enter password again" required>
                     </span>
                 </label>
 

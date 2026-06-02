@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
-startAppSession();
+if (isset($_COOKIE[session_name()])) {
+    startAppSession();
+} else {
+    header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
+}
 require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
@@ -169,7 +173,9 @@ include('store/includes/header.php');
                             href="/menu.php?category=<?php echo (int) $category['id']; ?>">
                             <img
                                 src="<?php echo htmlspecialchars($categoryImage); ?>"
-                                alt="<?php echo htmlspecialchars($category['name']); ?>">
+                                alt="<?php echo htmlspecialchars($category['name']); ?>"
+                                loading="lazy"
+                                decoding="async">
                             <span><?php echo htmlspecialchars($category['name']); ?></span>
                             <small><?php echo (int) $category['product_count']; ?> item<?php echo (int) $category['product_count'] === 1 ? '' : 's'; ?></small>
                         </a>
@@ -203,7 +209,9 @@ include('store/includes/header.php');
                             <a class="home-product__image" href="/product.php?handle=<?php echo urlencode($product['handle']); ?>">
                                 <img
                                     src="<?php echo htmlspecialchars($productImage); ?>"
-                                    alt="<?php echo htmlspecialchars($product['title']); ?>">
+                                    alt="<?php echo htmlspecialchars($product['title']); ?>"
+                                    loading="lazy"
+                                    decoding="async">
                             </a>
 
                             <div class="home-product__body">
