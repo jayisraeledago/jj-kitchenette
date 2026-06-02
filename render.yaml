@@ -2,6 +2,7 @@ services:
   - type: web
     name: jj-kitchenette
     runtime: docker
+    region: singapore
     plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
