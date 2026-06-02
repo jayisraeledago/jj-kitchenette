@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: jj-kitchenette
+    name: jj-kitchenette-dem9
     runtime: docker
     region: singapore
     plan: free
