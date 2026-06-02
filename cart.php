@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -49,7 +50,7 @@ while ($item = $result->fetch_assoc()) {
     $item['price'] = (float) $item['price'];
     $item['quantity'] = max(1, (int) $item['quantity']);
     $item['subtotal'] = $item['price'] * $item['quantity'];
-    $item['image_path'] = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
+    $item['image_url'] = appImageUrl($item['image_path'] ?? '');
 
     $cartItems[] = $item;
     $total += $item['subtotal'];
@@ -158,7 +159,7 @@ include('store/includes/header.php');
 
                         <article class="cart-item">
                             <img
-                                src="/<?php echo htmlspecialchars($item['image_path']); ?>"
+                                src="<?php echo htmlspecialchars($item['image_url']); ?>"
                                 alt="<?php echo htmlspecialchars($item['title']); ?>"
                                 class="cart-image">
 
@@ -263,10 +264,10 @@ include('store/includes/header.php');
 
                     <div class="recommendation-grid">
                         <?php foreach ($recommendations as $product) {
-                            $recommendImage = !empty($product['image_path']) ? $product['image_path'] : 'uploads/default.png';
+                            $recommendImage = appImageUrl($product['image_path'] ?? '');
                         ?>
                             <article class="recommendation-card">
-                                <img src="/<?php echo htmlspecialchars($recommendImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>">
+                                <img src="<?php echo htmlspecialchars($recommendImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>">
 
                                 <div>
                                     <h3><?php echo htmlspecialchars($product['title']); ?></h3>
