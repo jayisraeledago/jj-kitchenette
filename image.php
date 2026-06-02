@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/includes/images.php';
-require_once __DIR__ . '/db.php';
 
 $path = ltrim(str_replace('\\', '/', trim((string) ($_GET['path'] ?? ''))), '/');
 
@@ -9,8 +8,18 @@ if ($path === '' || str_contains($path, '..')) {
 }
 
 $defaultPath = __DIR__ . '/uploads/default.png';
+$filePath = __DIR__ . '/' . $path;
+
+if (is_file($filePath)) {
+    $mime = mime_content_type($filePath) ?: 'image/png';
+    header('Content-Type: ' . $mime);
+    header('Cache-Control: public, max-age=86400');
+    readfile($filePath);
+    exit;
+}
 
 if ($path !== 'uploads/default.png') {
+    require_once __DIR__ . '/db.php';
     ensureProductImageStorage($conn);
 
     $stmt = $conn->prepare("
@@ -31,13 +40,7 @@ if ($path !== 'uploads/default.png') {
     }
 }
 
-$filePath = __DIR__ . '/' . $path;
-
-if (!is_file($filePath)) {
-    $filePath = $defaultPath;
-}
-
-$mime = mime_content_type($filePath) ?: 'image/png';
+$mime = mime_content_type($defaultPath) ?: 'image/png';
 header('Content-Type: ' . $mime);
 header('Cache-Control: public, max-age=86400');
-readfile($filePath);
+readfile($defaultPath);

@@ -1,9 +1,31 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
-if (isset($_COOKIE[session_name()])) {
+
+$canUseHomeCache = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET'
+    && ($_SERVER['QUERY_STRING'] ?? '') === ''
+    && !isset($_COOKIE[session_name()]);
+$homeCacheFile = sys_get_temp_dir() . '/jj-kitchenette-home.html';
+$homeCacheTtl = 300;
+
+if ($canUseHomeCache && is_file($homeCacheFile) && (time() - filemtime($homeCacheFile)) < $homeCacheTtl) {
+    header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
+    header('X-Home-Cache: HIT');
+    readfile($homeCacheFile);
+    exit;
+}
+
+if (!$canUseHomeCache && isset($_COOKIE[session_name()])) {
     startAppSession();
 } else {
     header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
+    header('X-Home-Cache: MISS');
+    ob_start(function ($html) use ($homeCacheFile) {
+        if (http_response_code() < 400 && $html !== '') {
+            file_put_contents($homeCacheFile, $html, LOCK_EX);
+        }
+
+        return $html;
+    });
 }
 require_once __DIR__ . '/includes/images.php';
 include 'db.php';
