@@ -271,7 +271,7 @@ include('store/includes/header.php');
                         </div>
 
                         <p class="checkout-note" id="deliveryRuleNote">
-                            Cash on Delivery is available in Tangub or Tangub City. Free delivery applies when the order reaches &#8369;200.00.
+                            Cash on Delivery is available in Tangub City. Free delivery applies when the order reaches &#8369;200.00.
                         </p>
                         <p class="checkout-warning" id="checkoutWarning" hidden></p>
                     </section>
@@ -501,7 +501,7 @@ include('store/includes/header.php');
                 checkoutWarning.innerText = 'Please add your delivery address first before placing a Cash on Delivery order.';
             } else if (isCodOutsideDeliveryArea) {
                 checkoutWarning.hidden = false;
-                checkoutWarning.innerText = 'Cash on Delivery is only available in Tangub or Tangub City. Please choose Store Pick Up to continue.';
+                checkoutWarning.innerText = 'Cash on Delivery is only available in Tangub City. Please choose Store Pick Up to continue.';
             } else {
                 checkoutWarning.hidden = true;
                 checkoutWarning.innerText = '';
