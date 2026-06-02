@@ -60,6 +60,7 @@ $addressStmt = $conn->prepare("SELECT city FROM addresses WHERE user_id = ? ORDE
 $addressStmt->bind_param("i", $user_id);
 $addressStmt->execute();
 $selectedAddress = $addressStmt->get_result()->fetch_assoc();
+$hasSavedAddress = (bool) $selectedAddress;
 
 $deliveryFee = 50;
 if ($selectedAddress) {
@@ -255,6 +256,13 @@ include('store/includes/header.php');
                         <i class="fas fa-lock"></i>
                         Proceed to Checkout
                     </a>
+
+                    <?php if (!$hasSavedAddress) { ?>
+                        <p class="cart-address-note">
+                            <i class="fas fa-location-dot"></i>
+                            Add your delivery address first before placing a Cash on Delivery order.
+                        </p>
+                    <?php } ?>
                 </aside>
             </div>
 

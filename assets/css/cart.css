@@ -321,6 +321,26 @@
     background: #e94c14;
 }
 
+.cart-address-note {
+    align-items: flex-start;
+    background: #fff8ed;
+    border: 1px solid #f2d3a4;
+    border-radius: 8px;
+    color: #7a4b10;
+    display: flex;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 9px;
+    line-height: 1.45;
+    margin: 12px 0 0;
+    padding: 11px 12px;
+}
+
+.cart-address-note i {
+    color: #c27411;
+    margin-top: 2px;
+}
+
 .cart-recommendations {
     margin-top: 28px;
 }

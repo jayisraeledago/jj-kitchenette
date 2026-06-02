@@ -233,7 +233,9 @@ include('store/includes/header.php');
                                 </button>
                             </div>
                         <?php } else { ?>
-                            <p class="checkout-muted">No saved address yet.</p>
+                            <p class="checkout-warning checkout-address-required" id="checkoutAddressNote">
+                                Please add your delivery address first before placing a Cash on Delivery order.
+                            </p>
                             <button type="button" class="add-new-address" onclick="openAddressModal()">
                                 + Add Address
                             </button>
@@ -493,7 +495,10 @@ include('store/includes/header.php');
         }
 
         if (checkoutWarning) {
-            if (isCodOutsideDeliveryArea) {
+            if (paymentMethod === 'cod' && !getSelectedAddressRadio()) {
+                checkoutWarning.hidden = false;
+                checkoutWarning.innerText = 'Please add your delivery address first before placing a Cash on Delivery order.';
+            } else if (isCodOutsideDeliveryArea) {
                 checkoutWarning.hidden = false;
                 checkoutWarning.innerText = 'Cash on Delivery is only available in Tangub or Tangub City. Please choose Store Pick Up to continue.';
             } else {
@@ -726,10 +731,15 @@ include('store/includes/header.php');
         if (!currentAddress) {
             const deliverySection = document.querySelector('.checkout-section');
             const muted = deliverySection.querySelector('.checkout-muted');
+            const addressNote = deliverySection.querySelector('#checkoutAddressNote');
             const addButton = deliverySection.querySelector('.add-new-address');
 
             if (muted) {
                 muted.remove();
+            }
+
+            if (addressNote) {
+                addressNote.remove();
             }
 
             if (addButton) {
