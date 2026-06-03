@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $message = 'No account was found with that email address. Please create an account first.';
                 $messageType = 'error';
                 $messageLink = [
-                    'href' => '/account',
+                    'href' => '/account.php',
                     'label' => 'Create account'
                 ];
             } elseif ($roleName !== 'customer') {

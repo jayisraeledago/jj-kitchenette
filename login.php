@@ -136,7 +136,7 @@ include('store/includes/header.php');
                 </div>
                 <div class="account-footer__row">
                     <span>Don't have an account?</span>
-                    <a href="/account">
+                    <a href="/account.php">
                         Create Account
                     </a>
                 </div>

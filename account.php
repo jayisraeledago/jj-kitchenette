@@ -162,7 +162,7 @@ include('store/includes/header.php');
 
             <div class="account-footer">
                 Already have an account?
-                <a href="/login">Login</a>
+                <a href="/login.php">Login</a>
             </div>
 
         </div>
