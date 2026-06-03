@@ -11,6 +11,9 @@ node_modules/
 *.sqlite
 *.db
 
+# Local submission artifacts
+docs/JJ_Kitchenette_Project_Documentation.pdf
+
 # OS/editor files
 .DS_Store
 Thumbs.db
