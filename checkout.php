@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -129,6 +130,7 @@ foreach ($items as $index => $item) {
     $items[$index]['price'] = (float) $item['price'];
     $items[$index]['quantity'] = max(1, (int) $item['quantity']);
     $items[$index]['subtotal'] = $items[$index]['price'] * $items[$index]['quantity'];
+    $items[$index]['image_url'] = appImageUrl($item['image_path'] ?? '');
 
     $total += $items[$index]['subtotal'];
 }
@@ -284,11 +286,12 @@ include('store/includes/header.php');
                             </div>
                         </div>
                         <?php foreach ($items as $item) {
-                            $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
                             $options = getCheckoutOptions($item);
-                            ?>
+                        ?>
                             <div class="checkout-item">
-                                <img src="/<?php echo htmlspecialchars($imagePath); ?>" alt="Product">
+                                <img
+                                    src="<?php echo htmlspecialchars($item['image_url']); ?>"
+                                    alt="<?php echo htmlspecialchars($item['title']); ?>">
                                 <div class="checkout-item__info">
                                     <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                                     <?php if (!empty($options)) { ?>
