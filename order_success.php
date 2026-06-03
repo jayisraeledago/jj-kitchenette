@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 startAppSession();
+require_once __DIR__ . '/includes/images.php';
 include 'db.php';
 require_once __DIR__ . '/includes/order_cancel.php';
 
@@ -53,6 +54,7 @@ $itemsResult = $itemStmt->get_result();
 $items = [];
 
 while ($item = $itemsResult->fetch_assoc()) {
+    $item['image_url'] = appImageUrl($item['image_path'] ?? '');
     $items[] = $item;
 }
 
@@ -226,10 +228,9 @@ include('store/includes/header.php');
                 ], function ($value) {
                     return $value !== null && $value !== '' && strtolower($value) !== 'default';
                 });
-                $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'uploads/default.png';
             ?>
                 <div class="order-success-item <?= $isCanceledItem ? 'order-success-item--canceled' : '' ?>">
-                    <img src="/<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($item['product_title']); ?>">
+                    <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="<?php echo htmlspecialchars($item['product_title']); ?>">
                     <div>
                         <h3>
                             <?php echo htmlspecialchars($item['product_title']); ?>
